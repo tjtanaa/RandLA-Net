@@ -1,1 +1,11 @@
 .idea
+/__pycache__/
+/train_log/
+/utils/cpp_wrappers/cpp_subsampling/build/
+/utils/cpp_wrappers/cpp_subsampling/grid_subsampling.cpython-37m-x86_64-linux-gnu.so
+/utils/nearest_neighbors/build/
+/utils/nearest_neighbors/knn.cpp
+/utils/nearest_neighbors/lib/
+/results/
+log_train_Semantic3D1.txt
+/RandLA-Net_builder_v2/
