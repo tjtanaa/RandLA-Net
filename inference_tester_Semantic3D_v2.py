@@ -33,10 +33,11 @@ class InferenceModelTester:
             print("Model restored from " + restore_snap)
 
 
-        # for op in tf.get_default_graph().get_operations():
-        #     print(str(op.name))
+        for op in tf.get_default_graph().get_operations():
+            print(str(op.name))
 
         output_tensor=self.sess.graph.get_tensor_by_name('results/Softmax:0')
+        # output_tensor=self.sess.graph.get_tensor_by_name('results/segmentation_mask:0')
 
         # is_training_tensor = self.sess.graph.get_tensor_by_name('IS_TRAINING:0')
 
@@ -159,7 +160,13 @@ class InferenceModelTester:
 
 
         # Add a softmax operation for predictions
+        # self.prob_logits = model.prob_logits
         self.prob_logits = tf.nn.softmax(model.logits)
+        # self.prob_logits = tf.expand_dims(tf.nn.softmax(model.logits), 0, name='segmentation_mask')
+        self.encoder_features = model.encoder_features
+        self.encoder_sub_indices = model.encoder_sub_indices
+        self.decoder_features = model.decoder_features
+        self.decoder_sub_indices = model.decoder_sub_indices
         # self.test_probs = [np.zeros((l.data.shape[0], model.config.num_classes), dtype=np.float16)
         #                    for l in dataset.input_trees['test']]
 

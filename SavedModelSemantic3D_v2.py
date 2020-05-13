@@ -548,29 +548,36 @@ if __name__ == '__main__':
         tester.test(model, dataset)
 
     elif Mode == 'save':
-        # point_cloud = tf.compat.v1.placeholder(tf.float32, shape=(65536, 3), name='Input_Placeholder')
-        # point_cloud = tf.compat.v1.placeholder(tf.float32, shape=(None, 3), name='Input_Placeholder')
-        # point_cloud = tf.convert_to_tensor(np.random.randn(65536, 3), dtype=tf.float32)
-        point_cloud  = np.random.randn(65536//4, 3).astype(np.float32)
+        point_cloud  = np.around(np.random.randn(65536//4, 3), 5).astype(np.float32)
         # with open("./sample.txt", 'w') as f:
         #     for p in range(point_cloud.shape[0]):
         #         f.write(str(point_cloud[p,0]) + " ")
         #         f.write(str(point_cloud[p,1]) + " ")
-        #         f.write(str(point_cloud[p,2]) + " \n")
+        #         f.write(str(point_cloud[p,2]))
+        #         if p < point_cloud.shape[0]-1:
+        #             f.write("\n")
         # load from sample.txt and double check the compute indices with the one found in bazel
         # this is to ensure that the knn-search algorithm in the bazel has been implemented
         # correctly
 
-        # r = 0
-        # with open('./sample.txt', 'r') as f:
-        #     for i, line in enumerate(f):
-        #         # if i >= 65536//2:
-        #         #     break
-        #         values = line.rstrip('\n').split(" ")
-        #         point_cloud[r, 0] = float(values[0])
-        #         point_cloud[r, 1] = float(values[1])
-        #         point_cloud[r, 2] = float(values[2])
-        #         r += 1 
+        r = 0
+        with open('./sample.txt', 'r') as f:
+            for i, line in enumerate(f):
+                # if i >= 65536//2:
+                #     break
+                values = line.rstrip('\n').split(" ")
+                point_cloud[r, 0] = np.around(float(values[0]),5)
+                point_cloud[r, 1] = np.around(float(values[1]),5)
+                point_cloud[r, 2] = np.around(float(values[2]),5)
+                r += 1 
+
+        with open("./sample.txt", 'w') as f:
+            for p in range(point_cloud.shape[0]):
+                f.write(str(point_cloud[p,0]) + " ")
+                f.write(str(point_cloud[p,1]) + " ")
+                f.write(str(point_cloud[p,2])+ " ")
+                if p < point_cloud.shape[0]-1:
+                    f.write("\n")
 
         input_to_model, input_list_data = gen_one_sample(point_cloud)
         cfg.saving = False
@@ -585,8 +592,87 @@ if __name__ == '__main__':
         feed_dict = {}
         for i in range(len(input_to_model)):
             feed_dict[input_to_model[i]] = input_list_data[i]
-        segmentation_mask = tester.sess.run(tester.prob_logits, feed_dict)
-        print(segmentation_mask.shape)      
+        segmentation_mask, encoder_features, encoder_sub_indices, decoder_features, decoder_sub_indices \
+            = tester.sess.run([tester.prob_logits, tester.encoder_features, tester.encoder_sub_indices , tester.decoder_features, tester.decoder_sub_indices], feed_dict)
+        print(segmentation_mask.shape)  
+
+        with open("./results.txt", 'w') as f:
+            for p in range(segmentation_mask.shape[0]):
+                f.write(str(segmentation_mask[p,0]) + " ")
+                f.write(str(segmentation_mask[p,1]) + " ")
+                f.write(str(segmentation_mask[p,2]) + " ")
+                f.write(str(segmentation_mask[p,3]) + " ")
+                f.write(str(segmentation_mask[p,4]) + " ")
+                f.write(str(segmentation_mask[p,5]) + " ")
+                f.write(str(segmentation_mask[p,6]) + " ")
+                f.write(str(segmentation_mask[p,7]) + " ")
+                if p < segmentation_mask.shape[0]-1:
+                    f.write("\n")
+        # load from sample.txt and double check the compute indices with the one found in bazel
+        # this is to ensure that the knn-search algorithm in the bazel has been implemented
+        # correctly
+        # r = 0
+        # with open('./results.txt', 'r') as f:
+        #     for i, line in enumerate(f):
+        #         values = line.rstrip('\n').split(" ")
+        #         flag = True
+        #         flag = flag & (np.abs(segmentation_mask[r, 0] - float(values[0])) < 1e-7)
+        #         flag = flag & (np.abs(segmentation_mask[r, 1] - float(values[1])) < 1e-7)
+        #         flag = flag & (np.abs(segmentation_mask[r, 2] - float(values[2])) < 1e-7)
+        #         flag = flag & (np.abs(segmentation_mask[r, 3] - float(values[3])) < 1e-7)
+        #         flag = flag & (np.abs(segmentation_mask[r, 4] - float(values[4])) < 1e-7)
+        #         flag = flag & (np.abs(segmentation_mask[r, 5] - float(values[5])) < 1e-7)
+        #         flag = flag & (np.abs(segmentation_mask[r, 6] - float(values[6])) < 1e-7)
+        #         flag = flag & (np.abs(segmentation_mask[r, 7] - float(values[7])) < 1e-7)
+        #         if not flag:
+        #             print("error at point ", i)
+        #         r += 1 
+
+        for i in range(len(encoder_features)): 
+            print(encoder_features[i].shape) 
+
+        for i in range(len(encoder_sub_indices)):
+            print(encoder_sub_indices[i].shape)  
+            with open("./encoder_sub_indices_" + str(i) + ".txt", 'w') as f:
+                for p in range(encoder_sub_indices[i].shape[1]):
+                    for c in range(encoder_sub_indices[i].shape[2]):
+                        f.write(str(encoder_sub_indices[i][0, p,c]) + " ")
+                    if p < encoder_sub_indices[i].shape[1]-1:
+                        f.write("\n")
+            # r = 0
+            # with open("./encoder_sub_indices_" + str(i) + ".txt", 'r') as f:
+            #     for p, line in enumerate(f):
+            #         values = line.rstrip('\n').split(" ")
+            #         # print(values)
+            #         # exit()
+            #         flag = True
+            #         for c in range(len(values)-1):
+            #             flag = flag & (np.abs(encoder_sub_indices[i][0, p,c] - float(values[c])) < 1e-7)
+            #         if not flag:
+            #             print("error at point ", i)
+            #         r += 1 
+
+        for i in range(len(decoder_features)): 
+            print(decoder_features[i].shape) 
+
+        for i in range(len(decoder_sub_indices)):
+            print(decoder_sub_indices[i].shape)  
+            with open("./decoder_sub_indices_" + str(i) + ".txt", 'w') as f:
+                for p in range(decoder_sub_indices[i].shape[1]):
+                    for c in range(decoder_sub_indices[i].shape[2]):
+                        f.write(str(decoder_sub_indices[i][0, p,c]) + " ")
+                    if p < decoder_sub_indices[i].shape[1]-1:
+                        f.write("\n")
+            # r = 0
+            # with open("./decoder_sub_indices_" + str(i) + ".txt", 'r') as f:
+            #     for p, line in enumerate(f):
+            #         values = line.rstrip('\n').split(" ")
+            #         flag = True
+            #         for c in range(len(values)-1):
+            #             flag = flag & (np.abs(decoder_sub_indices[i][0, p,c] - float(values[c])) < 1e-7)
+            #         if not flag:
+            #             print("error at point ", i)
+            #         r += 1 
 
     elif Mode == "tflite":
         converter = tf.lite.TFLiteConverter.from_saved_model(FLAGS.testdir)

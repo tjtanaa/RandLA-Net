@@ -51,6 +51,13 @@ class Inference_Network:
             self.correct_prediction = 0
             self.accuracy = 0
             self.mIou_list = [0]
+            
+            # self.encoder_features = None
+            # self.encoder_sub_indices = None
+            self.encoder_features = []
+            self.encoder_sub_indices = []
+            self.decoder_features = []
+            self.decoder_sub_indices = []
             # self.class_weights = DP.get_class_weights(dataset.name)
             # self.Log_file = open('log_train_' + str(dataset.val_split) + '.txt', 'a')
 
@@ -95,7 +102,8 @@ class Inference_Network:
             # save
             self.logits = tf.reshape(self.logits, [-1, config.num_classes])
             self.prob_logits = tf.nn.softmax(self.logits) # results/Softmax
-
+            # if tf.rank(self.prob_logits) == 2:
+            # self.prob_logits = tf.expand_dims(self.prob_logits, 0, name='segmentation_mask')
             # tf.summary.scalar('learning_rate', self.learning_rate)
             # tf.summary.scalar('loss', self.loss)
             # tf.summary.scalar('accuracy', self.accuracy)
@@ -128,9 +136,15 @@ class Inference_Network:
                                                  'Encoder_layer_' + str(i), is_training)
             f_sampled_i = self.random_sample(f_encoder_i, inputs['sub_idx'][i])
             feature = f_sampled_i
+            # if i == 0:
+            #     self.encoder_features = f_encoder_i
+            #     self.encoder_sub_indices = inputs['sub_idx'][i]
             if i == 0:
                 f_encoder_list.append(f_encoder_i)
+                self.encoder_features.append(f_encoder_i)
             f_encoder_list.append(f_sampled_i)
+            self.encoder_features.append(f_sampled_i)
+            self.encoder_sub_indices.append(inputs['sub_idx'][i])
         # ###########################Encoder############################
 
         feature = helper_tf_util.conv2d(f_encoder_list[-1], f_encoder_list[-1].get_shape()[3].value, [1, 1],
@@ -147,6 +161,8 @@ class Inference_Network:
                                                           is_training=is_training)
             feature = f_decoder_i
             f_decoder_list.append(f_decoder_i)
+            self.decoder_features.append(f_decoder_i)
+            self.decoder_sub_indices.append(inputs['interp_idx'][-j - 1])
         # ###########################Decoder############################
 
         f_layer_fc1 = helper_tf_util.conv2d(f_decoder_list[-1], 64, [1, 1], 'fc1', [1, 1], 'VALID', True, is_training)
