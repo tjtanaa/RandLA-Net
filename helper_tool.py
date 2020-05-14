@@ -1,8 +1,13 @@
-from open3d import linux as open3d
+# from open3d import linux as open3d
+# https://github.com/intel-isl/Open3D/issues/841
+import open3d
 from os.path import join
 import numpy as np
 import colorsys, random, os, sys
 import pandas as pd
+import tensorflow as tf
+
+# import tensorflow.compat.v1 as tf
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -13,23 +18,32 @@ sys.path.append(os.path.join(BASE_DIR, 'utils'))
 
 import cpp_wrappers.cpp_subsampling.grid_subsampling as cpp_subsampling
 import nearest_neighbors.lib.python.nearest_neighbors as nearest_neighbors
+try:
+  from tensorflow_nearest_neighbor.python.ops.nearest_neighbor_ops import nearest_neighbor
+except ImportError:
+  from nearest_neighbor_ops import nearest_neighbor
 
 
 class ConfigSemanticKITTI:
     k_n = 16  # KNN
-    num_layers = 4  # Number of layers
+    num_layers = 3  # Number of layers
     num_points = 4096 * 11  # Number of input points
+    # num_points = 1024 * 64
     num_classes = 19  # Number of valid classes
     sub_grid_size = 0.06  # preprocess_parameter
 
-    batch_size = 6  # batch_size during training
-    val_batch_size = 20  # batch_size during validation and test
+    batch_size = 4  # batch_size during training
+    val_batch_size = 24  # batch_size during validation and test
     train_steps = 500  # Number of steps per epochs
     val_steps = 100  # Number of validation steps per epoch
 
-    sub_sampling_ratio = [4, 4, 4, 4]  # sampling ratio of random sampling at each layer
-    d_out = [16, 64, 128, 256]  # feature dimension
-    num_sub_points = [num_points // 4, num_points // 16, num_points // 64, num_points // 256]
+    # sub_sampling_ratio = [4, 4, 4, 4]  # sampling ratio of random sampling at each layer
+    # d_out = [16, 64, 128, 256]  # feature dimension
+    # num_sub_points = [num_points // 4, num_points // 16, num_points // 64, num_points // 256]
+
+    sub_sampling_ratio = [4, 4, 4]  # sampling ratio of random sampling at each layer
+    d_out = [16, 64, 128]  # feature dimension
+    num_sub_points = [num_points // 4, num_points // 16, num_points // 64]
 
     noise_init = 3.5  # noise initial parameter
     max_epoch = 100  # maximum epoch during training
@@ -48,8 +62,8 @@ class ConfigS3DIS:
     num_classes = 13  # Number of valid classes
     sub_grid_size = 0.04  # preprocess_parameter
 
-    batch_size = 6  # batch_size during training
-    val_batch_size = 20  # batch_size during validation and test
+    batch_size = 8  # batch_size during training
+    val_batch_size = 24  # batch_size during validation and test
     train_steps = 500  # Number of steps per epochs
     val_steps = 100  # Number of validation steps per epoch
 
@@ -69,11 +83,11 @@ class ConfigS3DIS:
 class ConfigSemantic3D:
     k_n = 16  # KNN
     num_layers = 5  # Number of layers
-    num_points = 65536  # Number of input points
+    num_points = 65536//4  # 65536 Number of input points
     num_classes = 8  # Number of valid classes
     sub_grid_size = 0.06  # preprocess_parameter
 
-    batch_size = 4  # batch_size during training
+    batch_size = 2  # 5 batch_size during training
     val_batch_size = 16  # batch_size during validation and test
     train_steps = 500  # Number of steps per epochs
     val_steps = 100  # Number of validation steps per epoch
@@ -142,8 +156,6 @@ class DataProcessing:
             pc_path = join(seq_path, 'velodyne')
             if seq_id == '08':
                 val_file_list.append([join(pc_path, f) for f in np.sort(os.listdir(pc_path))])
-                if seq_id == test_scan_num:
-                    test_file_list.append([join(pc_path, f) for f in np.sort(os.listdir(pc_path))])
             elif int(seq_id) >= 11 and seq_id == test_scan_num:
                 test_file_list.append([join(pc_path, f) for f in np.sort(os.listdir(pc_path))])
             elif seq_id in ['00', '01', '02', '03', '04', '05', '06', '07', '09', '10']:
@@ -162,9 +174,21 @@ class DataProcessing:
         :param k: Number of neighbours in knn search
         :return: neighbor_idx: neighboring points indexes, B*N2*k
         """
-
+        # return nearest_neighbor(support_pts, query_pts, k)
         neighbor_idx = nearest_neighbors.knn_batch(support_pts, query_pts, k, omp=True)
         return neighbor_idx.astype(np.int32)
+
+    @staticmethod
+    def tf_knn_search(support_pts, query_pts, k):
+        """
+        :param support_pts: points you have, B*N1*3
+        :param query_pts: points you want to know the neighbour index, B*N2*3
+        :param k: Number of neighbours in knn search
+        :return: neighbor_idx: neighboring points indexes, B*N2*k
+        """
+        return nearest_neighbor(support_pts, query_pts, k)
+        # neighbor_idx = nearest_neighbors.knn_batch(support_pts, query_pts, k, omp=True)
+        # return neighbor_idx.astype(np.int32)
 
     @staticmethod
     def data_aug(xyz, color, labels, idx, num_out):
@@ -184,6 +208,13 @@ class DataProcessing:
         # random shuffle the index
         idx = np.arange(len(x))
         np.random.shuffle(idx)
+        return x[idx]
+
+    @staticmethod
+    def tf_shuffle_idx(x):
+        # random shuffle the index
+        idx = tf.range(0, tf.shape(x)[0], 1)
+        idx = tf.random.shuffle(idx, seed=None, name=None)
         return x[idx]
 
     @staticmethod
@@ -286,16 +317,11 @@ class Plot:
         return 0
 
     @staticmethod
-    def draw_pc_sem_ins(pc_xyz, pc_sem_ins, plot_colors=None):
-        """
-        pc_xyz: 3D coordinates of point clouds
-        pc_sem_ins: semantic or instance labels
-        plot_colors: custom color list
-        """
-        if plot_colors is not None:
-            ins_colors = plot_colors
+    def draw_pc_sem_ins(pc_xyz, pc_sem_ins, fix_color_num=None):
+        if fix_color_num is not None:
+            ins_colors = Plot.random_colors(fix_color_num + 1, seed=2)
         else:
-            ins_colors = Plot.random_colors(len(np.unique(pc_sem_ins)) + 1, seed=2)
+            ins_colors = Plot.random_colors(len(np.unique(pc_sem_ins)) + 1, seed=2)  # cls 14
 
         ##############################
         sem_ins_labels = np.unique(pc_sem_ins)
@@ -306,7 +332,7 @@ class Plot:
             if semins <= -1:
                 tp = [0, 0, 0]
             else:
-                if plot_colors is not None:
+                if fix_color_num is not None:
                     tp = ins_colors[semins]
                 else:
                     tp = ins_colors[id]
@@ -316,11 +342,11 @@ class Plot:
             ### bbox
             valid_xyz = pc_xyz[valid_ind]
 
-            xmin = np.min(valid_xyz[:, 0]);
+            xmin = np.min(valid_xyz[:, 0])
             xmax = np.max(valid_xyz[:, 0])
-            ymin = np.min(valid_xyz[:, 1]);
+            ymin = np.min(valid_xyz[:, 1])
             ymax = np.max(valid_xyz[:, 1])
-            zmin = np.min(valid_xyz[:, 2]);
+            zmin = np.min(valid_xyz[:, 2])
             zmax = np.max(valid_xyz[:, 2])
             sem_ins_bbox.append(
                 [[xmin, ymin, zmin], [xmax, ymax, zmax], [min(tp[0], 1.), min(tp[1], 1.), min(tp[2], 1.)]])
