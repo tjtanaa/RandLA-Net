@@ -16,6 +16,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 sys.path.append(os.path.join(BASE_DIR, 'utils'))
 
+
 import cpp_wrappers.cpp_subsampling.grid_subsampling as cpp_subsampling
 import nearest_neighbors.lib.python.nearest_neighbors as nearest_neighbors
 try:
@@ -23,6 +24,36 @@ try:
 except ImportError:
   from nearest_neighbor_ops import nearest_neighbor
 
+
+class ConfigSemanticKITTI:
+    k_n = 16  # KNN
+    num_layers = 4  # Number of layers
+    num_points = 4096 * 11  # Number of input points
+    # num_points = 1024 * 64
+    num_classes = 2  # Number of valid classes
+    sub_grid_size = 0.06  # preprocess_parameter
+
+    batch_size = 6  # batch_size during training
+    val_batch_size = 24  # batch_size during validation and test
+    train_steps = 500  # Number of steps per epochs
+    val_steps = 100  # Number of validation steps per epoch
+
+    sub_sampling_ratio = [4, 4, 4, 4]  # sampling ratio of random sampling at each layer
+    d_out = [16, 64, 128, 256]  # feature dimension
+    num_sub_points = [num_points // 4, num_points // 16, num_points // 64, num_points // 256]
+
+    # sub_sampling_ratio = [4, 4, 4]  # sampling ratio of random sampling at each layer
+    # d_out = [16, 64, 128]  # feature dimension
+    # num_sub_points = [num_points // 4, num_points // 16, num_points // 64]
+
+    noise_init = 3.5  # noise initial parameter
+    max_epoch = 100  # maximum epoch during training
+    learning_rate = 1e-2  # initial learning rate
+    lr_decays = {i: 0.95 for i in range(0, 500)}  # decay rate of learning rate
+
+    train_sum_dir = 'train_log'
+    saving = True
+    saving_path = None
 
 class ConfigSemanticKITTI:
     k_n = 16  # KNN
@@ -112,6 +143,45 @@ class ConfigSemantic3D:
     augment_noise = 0.001
     augment_occlusion = 'none'
     augment_color = 0.8
+
+
+class ConfigKitti:
+    k_n = 16  # KNN
+    num_layers = 4  # Number of layers
+    num_points = 20000  # 65536 Number of input points
+    num_classes = 4  # Number of valid classes
+    num_features = 4
+    num_target_attributes = 9 # [x, y, z, h, w, l, ry, fgbg, cls]
+    num_output_attributes = 7 + 2 + num_classes
+
+    batch_size = 1  # 5 batch_size during training
+    val_batch_size = 16  # batch_size during validation and test
+    train_steps = 500  # Number of steps per epochs
+    val_steps = 100  # Number of validation steps per epoch
+
+    split_ratio = [0.7, 0.2, 0.1] # [Train, Val, Test] Train + Val + Test = 1
+    class_of_interest: [1,2,3,4]
+    difficulty : [1,2,3]
+
+    sub_sampling_ratio = [0.7, 0.7, 0.7, 0.7]  # sampling ratio of random sampling at each layer
+    d_out = [64, 128, 256, 512]  # feature dimension
+    # sub_sampling_ratio = [4,4,2]
+    # d_out = [128, 256, 512]  
+    
+    noise_init = 3.5  # noise initial parameter
+    max_epoch = 100  # maximum epoch during training
+    learning_rate = 1e-2  # initial learning rate
+    lr_decays = {i: 0.95 for i in range(0, 500)}  # decay rate of learning rate
+
+    train_data_path = "/media/data3/tjtanaa/kitti_dataset/tutorial/training"
+    train_sum_dir = 'train_log'
+    saving = True
+    saving_path = None
+
+    anchor_size = [[1.5343, 1.62815, 3.87087]]
+    
+
+
 
 
 class DataProcessing:

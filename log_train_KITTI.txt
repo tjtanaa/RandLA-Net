@@ -1,0 +1,709 @@
+Step 00000050 L_out=94.990 Acc=0.93 ---  299.58 ms/batch
+Step 00000100 L_out=189.562 Acc=0.96 ---  296.81 ms/batch
+Step 00000150 L_out=147.592 Acc=0.99 ---  293.72 ms/batch
+Step 00000200 L_out=171.577 Acc=0.99 ---  298.89 ms/batch
+Step 00000050 L_out=123.752 Acc=0.01 FgbgAcc=0.98 ---  251.91 ms/batch
+Step 00000100 L_out=113.751 Acc=0.04 FgbgAcc=0.96 ---  255.80 ms/batch
+Step 00000150 L_out=122.913 Acc=0.02 FgbgAcc=0.98 ---  250.55 ms/batch
+Step 00000200 L_out=211.426 Acc=0.07 FgbgAcc=0.93 ---  258.09 ms/batch
+Step 00000250 L_out=80.392 Acc=0.00 FgbgAcc=1.00 ---  255.95 ms/batch
+Step 00000300 L_out=104.020 Acc=0.00 FgbgAcc=0.98 ---  251.25 ms/batch
+Step 00000050 L_out=74.731 Acc=0.01 FgbgAcc=1.00 ---  259.15 ms/batch
+Step 00000100 L_out=76.895 Acc=0.01 FgbgAcc=0.99 ---  257.75 ms/batch
+Step 00000150 L_out=192.326 Acc=0.05 FgbgAcc=0.95 ---  254.67 ms/batch
+Step 00000200 L_out=91.887 Acc=0.01 FgbgAcc=0.99 ---  253.99 ms/batch
+Step 00000250 L_out=92.809 Acc=0.01 FgbgAcc=0.99 ---  255.14 ms/batch
+Step 00000300 L_out=120.211 Acc=0.01 FgbgAcc=0.99 ---  271.29 ms/batch
+Step 00000350 L_out=64.632 Acc=0.01 FgbgAcc=0.98 ---  258.26 ms/batch
+Step 00000400 L_out=67.350 Acc=0.00 FgbgAcc=1.00 ---  256.64 ms/batch
+Step 00000450 L_out=131.139 Acc=0.00 FgbgAcc=0.94 ---  257.32 ms/batch
+Step 00000500 L_out=57.755 Acc=0.00 FgbgAcc=1.00 ---  263.05 ms/batch
+Step 00000550 L_out=214.233 Acc=0.04 FgbgAcc=0.89 ---  258.20 ms/batch
+Step 00000600 L_out=70.886 Acc=0.00 FgbgAcc=0.99 ---  267.47 ms/batch
+Step 00000050 L_out=310.869 Acc=0.00 FgbgAcc=0.91 ---  269.20 ms/batch
+Step 00000100 L_out=553.278 Acc=0.00 FgbgAcc=0.82 ---  259.18 ms/batch
+Step 00000150 L_out=129.233 Acc=0.00 FgbgAcc=0.95 ---  257.47 ms/batch
+Step 00000200 L_out=260.093 Acc=0.00 FgbgAcc=0.96 ---  261.87 ms/batch
+Step 00000250 L_out=122.864 Acc=0.00 FgbgAcc=0.92 ---  268.69 ms/batch
+Step 00000300 L_out=515.401 Acc=0.00 FgbgAcc=0.82 ---  258.15 ms/batch
+Step 00000350 L_out=127.943 Acc=0.00 FgbgAcc=0.96 ---  257.93 ms/batch
+Step 00000400 L_out=181.784 Acc=0.00 FgbgAcc=0.88 ---  262.61 ms/batch
+Step 00000450 L_out=276.249 Acc=0.00 FgbgAcc=0.88 ---  254.08 ms/batch
+Step 00000500 L_out=80.271 Acc=0.00 FgbgAcc=0.96 ---  261.63 ms/batch
+Step 00000550 L_out=123.525 Acc=0.00 FgbgAcc=0.98 ---  254.97 ms/batch
+Step 00000600 L_out=84.485 Acc=0.00 FgbgAcc=0.98 ---  260.38 ms/batch
+Step 00000650 L_out=43.590 Acc=0.00 FgbgAcc=1.00 ---  261.84 ms/batch
+Step 00000700 L_out=45.646 Acc=0.00 FgbgAcc=1.00 ---  264.76 ms/batch
+Step 00000750 L_out=105.989 Acc=0.00 FgbgAcc=0.95 ---  257.07 ms/batch
+Step 00000800 L_out=68.402 Acc=0.00 FgbgAcc=0.98 ---  256.27 ms/batch
+Step 00000850 L_out=79.268 Acc=0.00 FgbgAcc=0.99 ---  259.66 ms/batch
+Step 00000900 L_out=119.377 Acc=0.00 FgbgAcc=0.97 ---  260.25 ms/batch
+Step 00000950 L_out=43.996 Acc=0.00 FgbgAcc=0.99 ---  259.27 ms/batch
+Step 00001000 L_out=45.956 Acc=0.00 FgbgAcc=1.00 ---  258.21 ms/batch
+Step 00001050 L_out=95.541 Acc=0.01 FgbgAcc=0.96 ---  262.23 ms/batch
+Step 00001100 L_out=82.652 Acc=0.00 FgbgAcc=0.94 ---  255.64 ms/batch
+Step 00001150 L_out=103.979 Acc=0.00 FgbgAcc=0.93 ---  260.07 ms/batch
+Step 00001200 L_out=104.900 Acc=0.00 FgbgAcc=0.96 ---  269.00 ms/batch
+Step 00000050 L_out=-131301.500 Acc=0.00 FgbgAcc=0.15 ---  257.94 ms/batch
+Step 00000100 L_out=-174569.828 Acc=0.00 FgbgAcc=0.05 ---  258.26 ms/batch
+Step 00000150 L_out=-175501.469 Acc=0.00 FgbgAcc=0.24 ---  259.59 ms/batch
+Step 00000200 L_out=-182974.484 Acc=0.00 FgbgAcc=0.05 ---  261.85 ms/batch
+Step 00000250 L_out=-184470.094 Acc=0.00 FgbgAcc=0.03 ---  259.35 ms/batch
+Step 00000300 L_out=-184961.953 Acc=0.00 FgbgAcc=0.03 ---  258.23 ms/batch
+Step 00000350 L_out=-185426.109 Acc=0.00 FgbgAcc=0.03 ---  257.43 ms/batch
+Step 00000400 L_out=-185331.906 Acc=0.00 FgbgAcc=0.06 ---  261.93 ms/batch
+Step 00000450 L_out=-185448.281 Acc=0.00 FgbgAcc=0.06 ---  263.90 ms/batch
+Step 00000500 L_out=-185399.734 Acc=0.00 FgbgAcc=0.08 ---  259.75 ms/batch
+Step 00000550 L_out=-185262.141 Acc=0.02 FgbgAcc=0.12 ---  258.13 ms/batch
+Step 00000600 L_out=-185560.703 Acc=0.01 FgbgAcc=0.06 ---  258.38 ms/batch
+Step 00000650 L_out=-185417.656 Acc=0.00 FgbgAcc=0.25 ---  258.35 ms/batch
+Step 00000050 L_out=-185279.391 Acc=0.07 FgbgAcc=0.15 ---  265.82 ms/batch
+Step 00000100 L_out=-185731.031 Acc=0.01 FgbgAcc=0.01 ---  253.14 ms/batch
+Step 00000150 L_out=-185672.531 Acc=0.00 FgbgAcc=0.00 ---  258.76 ms/batch
+Step 00000200 L_out=-185714.500 Acc=0.01 FgbgAcc=0.01 ---  266.73 ms/batch
+Step 00000250 L_out=-185697.859 Acc=0.00 FgbgAcc=0.07 ---  261.50 ms/batch
+Step 00000300 L_out=-185608.422 Acc=0.03 FgbgAcc=0.05 ---  264.59 ms/batch
+Step 00000350 L_out=-185725.203 Acc=0.00 FgbgAcc=0.02 ---  259.02 ms/batch
+Step 00000050 L_out=-185731.312 Acc=0.00 FgbgAcc=0.00 ---  256.44 ms/batch
+Step 00000100 L_out=-185702.312 Acc=0.00 FgbgAcc=0.01 ---  261.01 ms/batch
+Step 00000150 L_out=-185723.453 Acc=0.00 FgbgAcc=0.01 ---  272.80 ms/batch
+Step 00000200 L_out=-185717.250 Acc=0.00 FgbgAcc=0.08 ---  257.22 ms/batch
+Step 00000250 L_out=-185730.359 Acc=0.00 FgbgAcc=0.07 ---  267.55 ms/batch
+Step 00000300 L_out=-185637.734 Acc=0.00 FgbgAcc=0.00 ---  258.69 ms/batch
+Step 00000350 L_out=-185729.656 Acc=0.00 FgbgAcc=0.01 ---  260.02 ms/batch
+Step 00000400 L_out=-185728.594 Acc=0.00 FgbgAcc=0.01 ---  255.79 ms/batch
+Step 00000450 L_out=-185729.406 Acc=0.00 FgbgAcc=0.02 ---  265.07 ms/batch
+Step 00000500 L_out=-185701.328 Acc=0.00 FgbgAcc=0.01 ---  256.93 ms/batch
+Step 00000550 L_out=-185686.938 Acc=0.00 FgbgAcc=0.00 ---  261.78 ms/batch
+Step 00000050 L_out=-123818.055 Acc=0.00 FgbgAcc=0.16 ---  253.11 ms/batch
+Step 00000100 L_out=-123823.828 Acc=0.00 FgbgAcc=0.17 ---  247.03 ms/batch
+Step 00000150 L_out=-123823.828 Acc=0.00 FgbgAcc=0.02 ---  246.84 ms/batch
+Step 00000200 L_out=-123823.828 Acc=0.00 FgbgAcc=0.08 ---  249.51 ms/batch
+Step 00000250 L_out=-123823.828 Acc=0.00 FgbgAcc=0.02 ---  257.68 ms/batch
+Step 00000050 L_out=-84208.164 Acc=0.00 FgbgAcc=0.23 ---  258.05 ms/batch
+Step 00000100 L_out=-115584.672 Acc=0.00 FgbgAcc=0.04 ---  257.31 ms/batch
+Step 00000150 L_out=-117382.750 Acc=0.00 FgbgAcc=0.13 ---  266.17 ms/batch
+Step 00000200 L_out=-121909.680 Acc=0.00 FgbgAcc=0.15 ---  252.56 ms/batch
+Step 00000250 L_out=-123309.891 Acc=0.00 FgbgAcc=0.02 ---  259.28 ms/batch
+Step 00000300 L_out=-123053.234 Acc=0.00 FgbgAcc=0.14 ---  260.12 ms/batch
+Step 00000350 L_out=-123199.469 Acc=0.00 FgbgAcc=0.12 ---  259.50 ms/batch
+Step 00000400 L_out=-123282.812 Acc=0.00 FgbgAcc=0.13 ---  256.76 ms/batch
+Step 00000450 L_out=-123632.828 Acc=0.00 FgbgAcc=0.03 ---  259.46 ms/batch
+Step 00000500 L_out=-123709.344 Acc=0.00 FgbgAcc=0.06 ---  254.28 ms/batch
+Step 00000550 L_out=-123643.023 Acc=0.00 FgbgAcc=0.03 ---  255.84 ms/batch
+Step 00000600 L_out=-123586.594 Acc=0.00 FgbgAcc=0.07 ---  267.12 ms/batch
+Step 00000050 L_out=-17306.432 Acc=0.00 FgbgAcc=0.56 ---  245.94 ms/batch
+Step 00000100 L_out=-26839.574 Acc=0.00 FgbgAcc=0.48 ---  243.07 ms/batch
+Step 00000150 L_out=-35261.016 Acc=0.00 FgbgAcc=0.48 ---  249.97 ms/batch
+Step 00000200 L_out=-47461.508 Acc=0.00 FgbgAcc=0.38 ---  248.22 ms/batch
+Step 00000250 L_out=-53835.684 Acc=0.00 FgbgAcc=0.43 ---  246.64 ms/batch
+Step 00000300 L_out=-68945.453 Acc=0.00 FgbgAcc=0.33 ---  245.28 ms/batch
+Step 00000350 L_out=-74600.031 Acc=0.00 FgbgAcc=0.27 ---  254.69 ms/batch
+Step 00000050 L_out=-43084.539 Acc=0.00 FgbgAcc=0.50 ---  246.31 ms/batch
+Step 00000100 L_out=-52180.562 Acc=0.00 FgbgAcc=0.41 ---  246.90 ms/batch
+Step 00000150 L_out=-58397.309 Acc=0.00 FgbgAcc=0.38 ---  251.14 ms/batch
+Step 00000200 L_out=-70155.406 Acc=0.00 FgbgAcc=0.31 ---  245.33 ms/batch
+Step 00000250 L_out=-77047.766 Acc=0.00 FgbgAcc=0.28 ---  248.16 ms/batch
+Step 00000300 L_out=-85260.867 Acc=0.00 FgbgAcc=0.26 ---  259.09 ms/batch
+Step 00000350 L_out=-87673.297 Acc=0.00 FgbgAcc=0.26 ---  249.15 ms/batch
+Step 00000400 L_out=-93499.609 Acc=0.00 FgbgAcc=0.16 ---  251.16 ms/batch
+Step 00000450 L_out=-100384.141 Acc=0.00 FgbgAcc=0.13 ---  246.62 ms/batch
+Step 00000050 L_out=-30720.680 Acc=0.00 FgbgAcc=0.44 ---  252.79 ms/batch
+Step 00000050 L_out=778.668 Acc=0.00 FgbgAcc=0.83 ---  257.60 ms/batch
+Step 00000100 L_out=366.979 Acc=0.00 FgbgAcc=0.94 ---  250.93 ms/batch
+Step 00000150 L_out=199.179 Acc=0.00 FgbgAcc=0.98 ---  255.21 ms/batch
+Step 00000200 L_out=118.293 Acc=0.00 FgbgAcc=0.97 ---  251.54 ms/batch
+Step 00000250 L_out=253.215 Acc=0.00 FgbgAcc=0.91 ---  260.85 ms/batch
+Step 00000300 L_out=524.576 Acc=0.00 FgbgAcc=0.87 ---  251.46 ms/batch
+Step 00000350 L_out=430.478 Acc=0.00 FgbgAcc=0.84 ---  261.75 ms/batch
+Step 00000400 L_out=119.151 Acc=0.00 FgbgAcc=0.97 ---  252.66 ms/batch
+Step 00000450 L_out=123.045 Acc=0.00 FgbgAcc=0.98 ---  251.76 ms/batch
+Step 00000500 L_out=102.477 Acc=0.00 FgbgAcc=0.99 ---  254.30 ms/batch
+Step 00000550 L_out=87.512 Acc=0.00 FgbgAcc=1.00 ---  263.01 ms/batch
+Step 00000600 L_out=187.408 Acc=0.00 FgbgAcc=0.97 ---  254.36 ms/batch
+Step 00000650 L_out=81.279 Acc=0.00 FgbgAcc=0.98 ---  254.73 ms/batch
+Step 00000050 L_out=698.013 Acc=0.00 FgbgAcc=0.73 ---  250.36 ms/batch
+Step 00000100 L_out=222.533 Acc=0.00 FgbgAcc=0.86 ---  247.64 ms/batch
+Step 00000150 L_out=194.403 Acc=0.00 FgbgAcc=0.90 ---  265.17 ms/batch
+Step 00000200 L_out=2207.798 Acc=0.00 FgbgAcc=0.70 ---  253.91 ms/batch
+Step 00000250 L_out=161.099 Acc=0.00 FgbgAcc=0.85 ---  255.80 ms/batch
+Step 00000300 L_out=91.466 Acc=0.00 FgbgAcc=0.95 ---  253.14 ms/batch
+Step 00000350 L_out=92.448 Acc=0.00 FgbgAcc=0.81 ---  250.47 ms/batch
+Step 00000400 L_out=145.150 Acc=0.00 FgbgAcc=0.92 ---  262.00 ms/batch
+Step 00000450 L_out=92.978 Acc=0.00 FgbgAcc=0.94 ---  252.81 ms/batch
+Step 00000500 L_out=126.085 Acc=0.00 FgbgAcc=0.91 ---  263.62 ms/batch
+Step 00000550 L_out=316.030 Acc=0.00 FgbgAcc=0.83 ---  250.69 ms/batch
+Step 00000600 L_out=146.229 Acc=0.00 FgbgAcc=0.89 ---  250.39 ms/batch
+Step 00000650 L_out=61.082 Acc=0.00 FgbgAcc=0.95 ---  248.41 ms/batch
+Step 00000700 L_out=42.618 Acc=0.00 FgbgAcc=0.99 ---  252.80 ms/batch
+Step 00000750 L_out=162.014 Acc=0.00 FgbgAcc=0.88 ---  264.34 ms/batch
+Step 00000800 L_out=52.785 Acc=0.00 FgbgAcc=1.00 ---  250.95 ms/batch
+Step 00000850 L_out=218.690 Acc=0.00 FgbgAcc=0.90 ---  251.26 ms/batch
+Step 00000900 L_out=64.468 Acc=0.00 FgbgAcc=0.97 ---  254.28 ms/batch
+Step 00000950 L_out=172.875 Acc=0.00 FgbgAcc=0.87 ---  249.98 ms/batch
+Step 00001000 L_out=50.371 Acc=0.00 FgbgAcc=0.96 ---  253.15 ms/batch
+Step 00001050 L_out=195.413 Acc=0.00 FgbgAcc=0.87 ---  253.92 ms/batch
+Step 00001100 L_out=45.773 Acc=0.00 FgbgAcc=0.95 ---  253.56 ms/batch
+Step 00001150 L_out=58.094 Acc=0.00 FgbgAcc=0.93 ---  252.62 ms/batch
+Step 00001200 L_out=20.326 Acc=0.00 FgbgAcc=0.99 ---  248.01 ms/batch
+Step 00001250 L_out=8.290 Acc=0.00 FgbgAcc=1.00 ---  251.93 ms/batch
+Step 00001300 L_out=19.741 Acc=0.00 FgbgAcc=0.98 ---  251.56 ms/batch
+Step 00001350 L_out=30.687 Acc=0.00 FgbgAcc=0.97 ---  251.09 ms/batch
+Step 00001400 L_out=56.051 Acc=0.00 FgbgAcc=0.98 ---  251.32 ms/batch
+Step 00001450 L_out=80.536 Acc=0.00 FgbgAcc=0.90 ---  250.98 ms/batch
+Step 00001500 L_out=137.377 Acc=0.00 FgbgAcc=0.88 ---  253.40 ms/batch
+Step 00001550 L_out=25.887 Acc=0.00 FgbgAcc=0.98 ---  255.40 ms/batch
+Step 00001600 L_out=21.521 Acc=0.00 FgbgAcc=0.96 ---  254.76 ms/batch
+Step 00000050 L_out=221.482 Acc=0.00 FgbgAcc=0.94 ---  264.93 ms/batch
+Step 00000100 L_out=226.332 Acc=0.00 FgbgAcc=0.95 ---  251.52 ms/batch
+Step 00000150 L_out=285.732 Acc=0.00 FgbgAcc=0.93 ---  252.60 ms/batch
+Step 00000200 L_out=156.473 Acc=0.00 FgbgAcc=0.97 ---  250.92 ms/batch
+Step 00000250 L_out=325.566 Acc=0.00 FgbgAcc=0.93 ---  253.55 ms/batch
+Step 00000300 L_out=137.343 Acc=0.00 FgbgAcc=0.98 ---  263.78 ms/batch
+Step 00000350 L_out=108.323 Acc=0.00 FgbgAcc=0.98 ---  256.04 ms/batch
+Step 00000400 L_out=118.243 Acc=0.00 FgbgAcc=0.99 ---  249.58 ms/batch
+Step 00000450 L_out=309.258 Acc=0.00 FgbgAcc=0.90 ---  255.51 ms/batch
+Step 00000500 L_out=157.077 Acc=0.00 FgbgAcc=0.96 ---  256.85 ms/batch
+Step 00000550 L_out=175.007 Acc=0.00 FgbgAcc=0.91 ---  266.14 ms/batch
+Step 00000600 L_out=58.241 Acc=0.00 FgbgAcc=0.99 ---  253.07 ms/batch
+Step 00000650 L_out=85.481 Acc=0.00 FgbgAcc=0.99 ---  253.62 ms/batch
+Step 00000700 L_out=110.597 Acc=0.00 FgbgAcc=0.99 ---  265.54 ms/batch
+Step 00000750 L_out=391.366 Acc=0.00 FgbgAcc=0.84 ---  255.24 ms/batch
+Step 00000800 L_out=370.325 Acc=0.00 FgbgAcc=0.80 ---  255.93 ms/batch
+Step 00000850 L_out=114.940 Acc=0.00 FgbgAcc=0.97 ---  255.42 ms/batch
+Step 00000900 L_out=139.733 Acc=0.00 FgbgAcc=0.94 ---  258.40 ms/batch
+Step 00000950 L_out=420.712 Acc=0.00 FgbgAcc=0.79 ---  256.32 ms/batch
+Step 00001000 L_out=61.752 Acc=0.00 FgbgAcc=1.00 ---  255.67 ms/batch
+Step 00001050 L_out=61.020 Acc=0.00 FgbgAcc=0.99 ---  256.54 ms/batch
+Step 00001100 L_out=96.290 Acc=0.00 FgbgAcc=0.97 ---  255.81 ms/batch
+Step 00001150 L_out=352.779 Acc=0.00 FgbgAcc=0.93 ---  252.68 ms/batch
+Step 00001200 L_out=70.886 Acc=0.00 FgbgAcc=0.99 ---  254.20 ms/batch
+Step 00001250 L_out=71.666 Acc=0.00 FgbgAcc=0.97 ---  262.30 ms/batch
+Step 00001300 L_out=52.576 Acc=0.00 FgbgAcc=1.00 ---  252.40 ms/batch
+Step 00001350 L_out=156.021 Acc=0.00 FgbgAcc=0.97 ---  251.85 ms/batch
+Step 00000050 L_out=436.865 Acc=0.00 FgbgAcc=0.90 ---  256.53 ms/batch
+Step 00000100 L_out=272.929 Acc=0.00 FgbgAcc=0.94 ---  260.53 ms/batch
+Step 00000150 L_out=424.228 Acc=0.00 FgbgAcc=0.85 ---  252.74 ms/batch
+Step 00000200 L_out=348.708 Acc=0.00 FgbgAcc=0.92 ---  259.35 ms/batch
+Step 00000250 L_out=109.073 Acc=0.00 FgbgAcc=0.99 ---  254.85 ms/batch
+Step 00000300 L_out=107.880 Acc=0.00 FgbgAcc=0.98 ---  252.72 ms/batch
+Step 00000350 L_out=301.303 Acc=0.00 FgbgAcc=0.88 ---  252.19 ms/batch
+Step 00000400 L_out=359.698 Acc=0.00 FgbgAcc=0.92 ---  253.17 ms/batch
+Step 00000450 L_out=63.318 Acc=0.00 FgbgAcc=1.00 ---  250.13 ms/batch
+Step 00000500 L_out=103.222 Acc=0.00 FgbgAcc=0.99 ---  252.24 ms/batch
+Step 00000550 L_out=331.499 Acc=0.00 FgbgAcc=0.83 ---  251.08 ms/batch
+Step 00000600 L_out=208.884 Acc=0.00 FgbgAcc=0.86 ---  253.87 ms/batch
+Step 00000650 L_out=121.963 Acc=0.00 FgbgAcc=0.96 ---  250.93 ms/batch
+Step 00000700 L_out=291.503 Acc=0.00 FgbgAcc=0.90 ---  258.40 ms/batch
+Step 00000750 L_out=84.852 Acc=0.00 FgbgAcc=0.98 ---  251.11 ms/batch
+Step 00000800 L_out=65.060 Acc=0.00 FgbgAcc=0.99 ---  250.23 ms/batch
+Step 00000850 L_out=70.740 Acc=0.00 FgbgAcc=0.99 ---  252.41 ms/batch
+Step 00000900 L_out=232.743 Acc=0.00 FgbgAcc=0.86 ---  255.35 ms/batch
+Step 00000950 L_out=90.214 Acc=0.00 FgbgAcc=0.97 ---  255.48 ms/batch
+Step 00001000 L_out=64.180 Acc=0.00 FgbgAcc=0.99 ---  248.85 ms/batch
+Step 00001050 L_out=108.659 Acc=0.00 FgbgAcc=0.96 ---  251.99 ms/batch
+Step 00001100 L_out=104.860 Acc=0.00 FgbgAcc=0.98 ---  254.24 ms/batch
+Step 00001150 L_out=81.143 Acc=0.00 FgbgAcc=0.99 ---  254.36 ms/batch
+Step 00001200 L_out=97.149 Acc=0.00 FgbgAcc=0.96 ---  252.49 ms/batch
+Step 00001250 L_out=87.273 Acc=0.00 FgbgAcc=0.97 ---  248.57 ms/batch
+Step 00001300 L_out=108.309 Acc=0.00 FgbgAcc=0.99 ---  262.34 ms/batch
+Step 00001350 L_out=45.051 Acc=0.00 FgbgAcc=1.00 ---  258.89 ms/batch
+Step 00001400 L_out=124.719 Acc=0.00 FgbgAcc=0.91 ---  260.28 ms/batch
+Step 00001450 L_out=242.823 Acc=0.00 FgbgAcc=0.86 ---  254.15 ms/batch
+Step 00001500 L_out=119.408 Acc=0.00 FgbgAcc=0.97 ---  254.12 ms/batch
+Step 00001550 L_out=280.416 Acc=0.00 FgbgAcc=0.91 ---  255.62 ms/batch
+Step 00000050 L_out=314.790 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.02 ---  262.99 ms/batch
+Step 00000100 L_out=777.765 Acc=0.00 FgbgAcc=0.80 FgbgPer=0.26 ---  254.59 ms/batch
+Step 00000150 L_out=156.363 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.03 ---  254.86 ms/batch
+Step 00000200 L_out=215.627 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.02 ---  252.83 ms/batch
+Step 00000250 L_out=115.727 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  256.04 ms/batch
+Step 00000300 L_out=125.861 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  252.25 ms/batch
+Step 00000350 L_out=92.207 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.03 ---  254.78 ms/batch
+Step 00000400 L_out=525.635 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.06 ---  255.19 ms/batch
+Step 00000450 L_out=182.072 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  250.75 ms/batch
+Step 00000500 L_out=86.712 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  253.71 ms/batch
+Step 00000550 L_out=114.704 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  252.56 ms/batch
+Step 00000600 L_out=45.764 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  252.80 ms/batch
+Step 00000650 L_out=254.411 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.14 ---  252.29 ms/batch
+Step 00000700 L_out=221.856 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.10 ---  250.50 ms/batch
+Step 00000750 L_out=120.584 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.05 ---  254.87 ms/batch
+Step 00000800 L_out=155.342 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.01 ---  253.09 ms/batch
+Step 00000850 L_out=168.645 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  255.01 ms/batch
+Step 00000900 L_out=51.890 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  262.86 ms/batch
+Step 00000950 L_out=126.242 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.07 ---  246.80 ms/batch
+Step 00001000 L_out=78.546 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.03 ---  251.63 ms/batch
+Step 00000050 L_out=296.060 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.00 ---  254.58 ms/batch
+Step 00000100 L_out=496.715 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.13 ---  253.38 ms/batch
+Step 00000150 L_out=156.955 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  263.44 ms/batch
+Step 00000200 L_out=101.986 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  256.15 ms/batch
+Step 00000250 L_out=194.827 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  253.26 ms/batch
+Step 00000300 L_out=83.912 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  263.80 ms/batch
+Step 00000350 L_out=712.243 Acc=0.00 FgbgAcc=0.65 FgbgPer=0.35 ---  268.00 ms/batch
+Step 00000400 L_out=233.849 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.06 ---  249.57 ms/batch
+Step 00000450 L_out=1094.808 Acc=0.00 FgbgAcc=0.83 FgbgPer=0.02 ---  252.49 ms/batch
+Step 00000500 L_out=67.435 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  251.84 ms/batch
+Step 00000550 L_out=148.149 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.02 ---  256.88 ms/batch
+Step 00000600 L_out=81.219 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  263.81 ms/batch
+Step 00000650 L_out=78.714 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.01 ---  260.01 ms/batch
+Step 00000700 L_out=75.534 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.02 ---  250.77 ms/batch
+Step 00000750 L_out=75.496 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  254.98 ms/batch
+Step 00000800 L_out=74.184 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  257.96 ms/batch
+Step 00000850 L_out=42.441 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  251.68 ms/batch
+Step 00000900 L_out=72.052 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  258.58 ms/batch
+Step 00000950 L_out=88.717 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  250.89 ms/batch
+Step 00001000 L_out=182.554 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.11 ---  253.73 ms/batch
+Step 00001050 L_out=297.355 Acc=0.00 FgbgAcc=0.83 FgbgPer=0.17 ---  262.69 ms/batch
+Step 00001100 L_out=212.682 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.08 ---  261.74 ms/batch
+Step 00001150 L_out=40.639 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  258.14 ms/batch
+Step 00001200 L_out=55.405 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  260.29 ms/batch
+Step 00001250 L_out=48.493 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  264.39 ms/batch
+Step 00001300 L_out=43.655 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.03 ---  253.86 ms/batch
+Step 00001350 L_out=86.064 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  257.61 ms/batch
+Step 00001400 L_out=212.304 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.07 ---  266.46 ms/batch
+Step 00001450 L_out=244.108 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.12 ---  251.58 ms/batch
+Step 00001500 L_out=67.138 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  252.03 ms/batch
+Step 00001550 L_out=58.687 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  256.16 ms/batch
+Step 00001600 L_out=100.816 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.07 ---  263.60 ms/batch
+Step 00001650 L_out=77.626 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  260.30 ms/batch
+Step 00001700 L_out=36.308 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  254.19 ms/batch
+Step 00001750 L_out=43.142 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  251.27 ms/batch
+Step 00001800 L_out=83.583 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  267.14 ms/batch
+Step 00001850 L_out=76.609 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  256.39 ms/batch
+Step 00001900 L_out=168.372 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  255.31 ms/batch
+Step 00001950 L_out=74.335 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  253.12 ms/batch
+Step 00002000 L_out=160.855 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  255.97 ms/batch
+Step 00002050 L_out=112.460 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  251.12 ms/batch
+Step 00002100 L_out=91.861 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  252.28 ms/batch
+Step 00002150 L_out=44.932 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  252.51 ms/batch
+Step 00002200 L_out=81.754 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  267.36 ms/batch
+Step 00002250 L_out=106.152 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.01 ---  253.84 ms/batch
+Step 00002300 L_out=31.998 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  262.55 ms/batch
+Step 00002350 L_out=250.215 Acc=0.00 FgbgAcc=0.85 FgbgPer=0.18 ---  255.29 ms/batch
+Step 00002400 L_out=132.683 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.09 ---  252.93 ms/batch
+Step 00002450 L_out=90.837 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  265.04 ms/batch
+Step 00002500 L_out=50.132 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  267.76 ms/batch
+Step 00002550 L_out=109.553 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.09 ---  267.73 ms/batch
+Step 00002600 L_out=93.529 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.07 ---  270.15 ms/batch
+Step 00002650 L_out=33.978 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.01 ---  251.83 ms/batch
+Step 00002700 L_out=222.762 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  265.51 ms/batch
+Step 00002750 L_out=35.639 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  257.67 ms/batch
+Step 00002800 L_out=56.155 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  268.19 ms/batch
+Step 00002850 L_out=49.871 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  265.16 ms/batch
+Step 00002900 L_out=34.345 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  256.71 ms/batch
+Step 00002950 L_out=42.377 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  251.17 ms/batch
+Step 00003000 L_out=52.857 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  269.82 ms/batch
+Step 00003050 L_out=79.308 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.07 ---  256.25 ms/batch
+Step 00003100 L_out=196.713 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.13 ---  264.55 ms/batch
+Step 00003150 L_out=38.731 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  257.17 ms/batch
+Step 00003200 L_out=23.575 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  269.00 ms/batch
+Step 00003250 L_out=162.683 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.08 ---  257.60 ms/batch
+Step 00003300 L_out=56.547 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  259.66 ms/batch
+Step 00003350 L_out=38.147 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  264.32 ms/batch
+Step 00003400 L_out=26.418 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  257.39 ms/batch
+Step 00003450 L_out=69.995 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.05 ---  249.80 ms/batch
+Step 00003500 L_out=36.178 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  258.30 ms/batch
+Step 00003550 L_out=81.304 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.08 ---  254.79 ms/batch
+Step 00003600 L_out=47.546 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  256.06 ms/batch
+Step 00003650 L_out=64.734 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  257.90 ms/batch
+Step 00003700 L_out=36.155 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  256.57 ms/batch
+Step 00003750 L_out=33.361 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.03 ---  252.06 ms/batch
+Step 00003800 L_out=42.535 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  264.18 ms/batch
+Step 00003850 L_out=39.768 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  257.74 ms/batch
+Step 00003900 L_out=35.453 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  261.42 ms/batch
+Step 00003950 L_out=126.607 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.08 ---  264.26 ms/batch
+Step 00004000 L_out=53.077 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  261.85 ms/batch
+Step 00004050 L_out=23.358 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  260.66 ms/batch
+Step 00004100 L_out=581.459 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  265.23 ms/batch
+Step 00004150 L_out=65.424 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  272.12 ms/batch
+Step 00004200 L_out=40.657 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  253.29 ms/batch
+Step 00004250 L_out=228.118 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.11 ---  252.48 ms/batch
+Step 00004300 L_out=83.468 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.10 ---  251.46 ms/batch
+Step 00004350 L_out=86.577 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.09 ---  263.92 ms/batch
+Step 00004400 L_out=51.058 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.03 ---  263.32 ms/batch
+Step 00004450 L_out=227.195 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.14 ---  257.76 ms/batch
+Step 00004500 L_out=80.010 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.04 ---  253.97 ms/batch
+Step 00004550 L_out=67.149 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  256.31 ms/batch
+Step 00004600 L_out=64.292 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.06 ---  269.38 ms/batch
+Step 00004650 L_out=69.361 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  270.22 ms/batch
+Step 00004700 L_out=61.639 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  255.87 ms/batch
+Step 00004750 L_out=141.778 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.09 ---  253.85 ms/batch
+Step 00004800 L_out=96.280 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.07 ---  261.23 ms/batch
+Step 00004850 L_out=410.190 Acc=0.00 FgbgAcc=0.83 FgbgPer=0.22 ---  269.89 ms/batch
+Step 00004900 L_out=20.281 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  255.75 ms/batch
+Step 00004950 L_out=55.021 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.05 ---  270.33 ms/batch
+Step 00005000 L_out=128.227 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.00 ---  254.58 ms/batch
+Step 00005050 L_out=19.106 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  256.10 ms/batch
+Step 00005100 L_out=62.235 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.05 ---  260.59 ms/batch
+Step 00005150 L_out=163.652 Acc=0.00 FgbgAcc=0.90 FgbgPer=0.09 ---  250.34 ms/batch
+Step 00005200 L_out=36.815 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  256.31 ms/batch
+Step 00005250 L_out=22.636 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  275.56 ms/batch
+Step 00005300 L_out=97.973 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.12 ---  262.74 ms/batch
+Step 00005350 L_out=57.336 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.07 ---  253.08 ms/batch
+Step 00005400 L_out=221.899 Acc=0.00 FgbgAcc=0.84 FgbgPer=0.18 ---  255.23 ms/batch
+Step 00005450 L_out=318.736 Acc=0.00 FgbgAcc=0.84 FgbgPer=0.11 ---  264.53 ms/batch
+Step 00005500 L_out=38.697 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  254.58 ms/batch
+Step 00005550 L_out=30.635 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  265.11 ms/batch
+Step 00005600 L_out=65.800 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  259.94 ms/batch
+Step 00005650 L_out=27.869 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  254.61 ms/batch
+Step 00005700 L_out=125.969 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  257.59 ms/batch
+Step 00005750 L_out=35.012 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.05 ---  263.28 ms/batch
+Step 00005800 L_out=42.131 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  251.35 ms/batch
+Step 00005850 L_out=30.031 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  252.93 ms/batch
+Step 00005900 L_out=28.543 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.01 ---  266.43 ms/batch
+Step 00005950 L_out=95.891 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.11 ---  262.18 ms/batch
+Step 00006000 L_out=53.580 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.03 ---  255.76 ms/batch
+Step 00006050 L_out=157.596 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.15 ---  260.88 ms/batch
+Step 00006100 L_out=131.942 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.12 ---  257.02 ms/batch
+Step 00006150 L_out=42.676 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  259.89 ms/batch
+Step 00006200 L_out=95.896 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.06 ---  256.60 ms/batch
+Step 00006250 L_out=181.850 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.03 ---  261.23 ms/batch
+Step 00006300 L_out=170.971 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.10 ---  257.12 ms/batch
+Step 00006350 L_out=95.248 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.11 ---  271.60 ms/batch
+Step 00006400 L_out=38.987 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  254.13 ms/batch
+Step 00006450 L_out=198.044 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.16 ---  255.69 ms/batch
+Step 00006500 L_out=91.360 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.02 ---  263.61 ms/batch
+Step 00006550 L_out=135.205 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.06 ---  264.93 ms/batch
+Step 00006600 L_out=40.297 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  259.45 ms/batch
+Step 00006650 L_out=13.307 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.02 ---  251.27 ms/batch
+Step 00006700 L_out=260.341 Acc=0.00 FgbgAcc=0.78 FgbgPer=0.25 ---  258.99 ms/batch
+Step 00006750 L_out=50.337 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.01 ---  253.33 ms/batch
+Step 00006800 L_out=81.172 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  257.73 ms/batch
+Step 00006850 L_out=93.115 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  252.55 ms/batch
+Step 00006900 L_out=37.515 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.00 ---  255.57 ms/batch
+Step 00006950 L_out=21.140 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  258.20 ms/batch
+Step 00007000 L_out=47.008 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.03 ---  248.48 ms/batch
+Step 00000050 L_out=548.953 Acc=0.00 FgbgAcc=0.77 FgbgPer=0.20 ---  256.97 ms/batch
+Step 00000100 L_out=198.792 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.01 ---  258.43 ms/batch
+Step 00000150 L_out=253.861 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.02 ---  252.26 ms/batch
+Step 00000200 L_out=200.479 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.00 ---  263.60 ms/batch
+Step 00000250 L_out=169.631 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  263.59 ms/batch
+Step 00000300 L_out=425.932 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.08 ---  259.66 ms/batch
+Step 00000350 L_out=125.517 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  249.14 ms/batch
+Step 00000400 L_out=122.105 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  251.02 ms/batch
+Step 00000450 L_out=162.269 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  252.27 ms/batch
+Step 00000500 L_out=347.364 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.14 ---  262.06 ms/batch
+Step 00000550 L_out=148.351 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  252.04 ms/batch
+Step 00000600 L_out=116.589 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  254.97 ms/batch
+Step 00000650 L_out=263.915 Acc=0.00 FgbgAcc=0.88 FgbgPer=0.12 ---  252.53 ms/batch
+Step 00000700 L_out=76.177 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  257.27 ms/batch
+Step 00000750 L_out=140.736 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  252.44 ms/batch
+Step 00000800 L_out=62.878 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  252.91 ms/batch
+Step 00000850 L_out=79.498 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  252.67 ms/batch
+Step 00000900 L_out=115.246 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  259.14 ms/batch
+Step 00000950 L_out=119.154 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.06 ---  255.40 ms/batch
+Step 00001000 L_out=338.679 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  251.85 ms/batch
+Step 00001050 L_out=148.217 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.02 ---  258.49 ms/batch
+Step 00001100 L_out=386.293 Acc=0.00 FgbgAcc=0.80 FgbgPer=0.22 ---  254.56 ms/batch
+Step 00001150 L_out=102.885 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  252.47 ms/batch
+Step 00001200 L_out=63.070 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  253.92 ms/batch
+Step 00001250 L_out=120.672 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  254.32 ms/batch
+Step 00001300 L_out=76.620 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  260.26 ms/batch
+Step 00001350 L_out=347.787 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.09 ---  249.80 ms/batch
+Step 00001400 L_out=173.469 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.10 ---  257.97 ms/batch
+Step 00001450 L_out=385.817 Acc=0.00 FgbgAcc=0.80 FgbgPer=0.20 ---  251.54 ms/batch
+Step 00001500 L_out=142.013 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.10 ---  250.22 ms/batch
+Step 00001550 L_out=523.398 Acc=0.00 FgbgAcc=0.82 FgbgPer=0.18 ---  252.82 ms/batch
+Step 00001600 L_out=283.321 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.14 ---  253.99 ms/batch
+Step 00001650 L_out=114.751 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  252.11 ms/batch
+Step 00001700 L_out=42.084 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  252.55 ms/batch
+Step 00001750 L_out=60.662 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  267.18 ms/batch
+Step 00001800 L_out=138.296 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  251.93 ms/batch
+Step 00001850 L_out=112.398 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  267.11 ms/batch
+Step 00001900 L_out=138.551 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  258.21 ms/batch
+Step 00001950 L_out=88.533 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  269.79 ms/batch
+Step 00002000 L_out=43.911 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  253.36 ms/batch
+Step 00002050 L_out=68.349 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  254.39 ms/batch
+Step 00002100 L_out=109.001 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.06 ---  256.68 ms/batch
+Step 00002150 L_out=70.371 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  258.09 ms/batch
+Step 00002200 L_out=145.071 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.04 ---  258.29 ms/batch
+Step 00002250 L_out=128.342 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.02 ---  252.07 ms/batch
+Step 00002300 L_out=41.095 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  251.71 ms/batch
+Step 00002350 L_out=112.661 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.05 ---  265.00 ms/batch
+Step 00002400 L_out=92.910 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  254.84 ms/batch
+Step 00002450 L_out=120.470 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.09 ---  259.17 ms/batch
+Step 00002500 L_out=121.599 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  258.73 ms/batch
+Step 00002550 L_out=366.887 Acc=0.00 FgbgAcc=0.84 FgbgPer=0.16 ---  252.31 ms/batch
+Step 00002600 L_out=46.331 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  255.02 ms/batch
+Step 00002650 L_out=52.921 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  259.85 ms/batch
+Step 00002700 L_out=151.641 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.00 ---  257.32 ms/batch
+Step 00002750 L_out=45.742 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  253.24 ms/batch
+Step 00002800 L_out=77.979 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  255.28 ms/batch
+Step 00002850 L_out=62.609 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  264.65 ms/batch
+Step 00002900 L_out=23.255 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.01 ---  263.22 ms/batch
+Step 00002950 L_out=413.067 Acc=0.00 FgbgAcc=0.83 FgbgPer=0.17 ---  255.43 ms/batch
+Step 00003000 L_out=27.383 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.02 ---  264.86 ms/batch
+Step 00003050 L_out=67.824 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.00 ---  254.09 ms/batch
+Step 00003100 L_out=139.745 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.08 ---  259.74 ms/batch
+Step 00003150 L_out=47.810 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  262.18 ms/batch
+Step 00003200 L_out=52.629 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  255.97 ms/batch
+Step 00003250 L_out=201.351 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.15 ---  252.69 ms/batch
+Step 00003300 L_out=64.594 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.04 ---  263.70 ms/batch
+Step 00003350 L_out=36.246 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  254.90 ms/batch
+Step 00003400 L_out=67.086 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  252.77 ms/batch
+Step 00003450 L_out=81.957 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.01 ---  263.17 ms/batch
+Step 00003500 L_out=25.486 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.02 ---  252.26 ms/batch
+Step 00003550 L_out=37.764 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  270.97 ms/batch
+Step 00003600 L_out=77.843 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  256.98 ms/batch
+Step 00003650 L_out=28.708 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  265.44 ms/batch
+Step 00003700 L_out=386.123 Acc=0.00 FgbgAcc=0.88 FgbgPer=0.14 ---  262.08 ms/batch
+Step 00003750 L_out=214.414 Acc=0.00 FgbgAcc=0.88 FgbgPer=0.10 ---  260.30 ms/batch
+Step 00003800 L_out=215.026 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.16 ---  256.31 ms/batch
+Step 00003850 L_out=44.698 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  254.27 ms/batch
+Step 00003900 L_out=142.628 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  266.08 ms/batch
+Step 00003950 L_out=348.084 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.15 ---  254.13 ms/batch
+Step 00004000 L_out=141.095 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.08 ---  259.86 ms/batch
+Step 00004050 L_out=298.594 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.13 ---  253.17 ms/batch
+Step 00004100 L_out=99.747 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  257.16 ms/batch
+Step 00004150 L_out=57.998 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.03 ---  252.68 ms/batch
+Step 00004200 L_out=55.139 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  267.92 ms/batch
+Step 00004250 L_out=44.673 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  254.38 ms/batch
+Step 00004300 L_out=90.723 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.07 ---  265.96 ms/batch
+Step 00004350 L_out=120.295 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.05 ---  261.49 ms/batch
+Step 00004400 L_out=34.026 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.01 ---  255.60 ms/batch
+Step 00004450 L_out=132.882 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.11 ---  258.25 ms/batch
+Step 00004500 L_out=74.355 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  258.01 ms/batch
+Step 00004550 L_out=72.614 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.00 ---  263.72 ms/batch
+Step 00004600 L_out=128.179 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.11 ---  259.99 ms/batch
+Step 00004650 L_out=42.239 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  255.79 ms/batch
+Step 00004700 L_out=54.297 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  257.64 ms/batch
+Step 00004750 L_out=97.415 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.01 ---  261.10 ms/batch
+Step 00004800 L_out=54.398 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.03 ---  264.82 ms/batch
+Step 00004850 L_out=38.799 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  255.36 ms/batch
+Step 00004900 L_out=22.620 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.01 ---  257.91 ms/batch
+Step 00004950 L_out=65.013 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  265.68 ms/batch
+Step 00005000 L_out=55.402 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  252.16 ms/batch
+Step 00005050 L_out=36.123 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  257.50 ms/batch
+Step 00005100 L_out=149.941 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.07 ---  258.06 ms/batch
+Step 00005150 L_out=328.938 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  268.72 ms/batch
+Step 00005200 L_out=19.407 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.01 ---  258.76 ms/batch
+Step 00005250 L_out=44.551 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  260.26 ms/batch
+Step 00005300 L_out=707.597 Acc=0.00 FgbgAcc=0.68 FgbgPer=0.34 ---  251.45 ms/batch
+Step 00005350 L_out=141.099 Acc=0.00 FgbgAcc=0.88 FgbgPer=0.14 ---  253.45 ms/batch
+Step 00005400 L_out=170.391 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.03 ---  258.28 ms/batch
+Step 00005450 L_out=91.865 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.03 ---  258.61 ms/batch
+Step 00005500 L_out=35.561 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  256.94 ms/batch
+Step 00005550 L_out=100.825 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.09 ---  260.20 ms/batch
+Step 00005600 L_out=40.799 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  264.68 ms/batch
+Step 00005650 L_out=108.473 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  252.85 ms/batch
+Step 00005700 L_out=43.524 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  253.40 ms/batch
+Step 00005750 L_out=176.994 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.08 ---  254.64 ms/batch
+Step 00005800 L_out=66.674 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.02 ---  255.99 ms/batch
+Step 00005850 L_out=74.452 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.07 ---  265.22 ms/batch
+Step 00005900 L_out=57.821 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  271.17 ms/batch
+Step 00005950 L_out=102.941 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  265.58 ms/batch
+Step 00006000 L_out=79.704 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  251.62 ms/batch
+Step 00006050 L_out=158.649 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  252.17 ms/batch
+Step 00006100 L_out=47.190 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  268.83 ms/batch
+Step 00006150 L_out=53.042 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  257.34 ms/batch
+Step 00006200 L_out=32.642 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.03 ---  253.27 ms/batch
+Step 00006250 L_out=363.145 Acc=0.00 FgbgAcc=0.75 FgbgPer=0.25 ---  252.16 ms/batch
+Step 00006300 L_out=138.299 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  256.02 ms/batch
+Step 00006350 L_out=45.490 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  249.52 ms/batch
+Step 00006400 L_out=72.154 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.04 ---  253.78 ms/batch
+Step 00006450 L_out=45.202 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.03 ---  247.69 ms/batch
+Step 00006500 L_out=81.470 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  254.93 ms/batch
+Step 00006550 L_out=68.562 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.05 ---  269.55 ms/batch
+Step 00006600 L_out=29.929 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  257.52 ms/batch
+Step 00006650 L_out=18.478 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  273.38 ms/batch
+Step 00006700 L_out=195.314 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.15 ---  255.40 ms/batch
+Step 00006750 L_out=66.003 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  256.82 ms/batch
+Step 00006800 L_out=138.820 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  269.48 ms/batch
+Step 00006850 L_out=45.917 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  251.78 ms/batch
+Step 00006900 L_out=101.409 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.06 ---  257.17 ms/batch
+Step 00006950 L_out=17.211 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.01 ---  269.11 ms/batch
+Step 00007000 L_out=34.894 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  255.83 ms/batch
+Step 00007050 L_out=173.085 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.09 ---  253.15 ms/batch
+Step 00007100 L_out=96.808 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.10 ---  254.86 ms/batch
+Step 00007150 L_out=225.001 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.12 ---  267.03 ms/batch
+Step 00007200 L_out=29.568 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  252.02 ms/batch
+Step 00007250 L_out=25.561 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  250.95 ms/batch
+Step 00007300 L_out=29.369 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  251.53 ms/batch
+Step 00007350 L_out=78.597 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  256.18 ms/batch
+Step 00007400 L_out=27.246 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  253.13 ms/batch
+Step 00007450 L_out=92.791 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  255.13 ms/batch
+Step 00007500 L_out=151.471 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.09 ---  261.12 ms/batch
+Step 00007550 L_out=34.951 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  263.40 ms/batch
+Step 00007600 L_out=56.973 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  253.91 ms/batch
+Step 00007650 L_out=119.096 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  248.83 ms/batch
+Step 00007700 L_out=56.193 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  252.76 ms/batch
+Step 00007750 L_out=57.976 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  251.35 ms/batch
+Step 00007800 L_out=148.338 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.11 ---  250.06 ms/batch
+Step 00007850 L_out=60.103 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.04 ---  250.12 ms/batch
+Step 00007900 L_out=80.182 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.04 ---  256.88 ms/batch
+Step 00000050 L_out=263.083 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.09 ---  252.40 ms/batch
+Step 00000100 L_out=254.178 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  251.42 ms/batch
+Step 00000150 L_out=186.266 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  249.48 ms/batch
+Step 00000200 L_out=109.732 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  253.59 ms/batch
+Step 00000250 L_out=94.190 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  253.43 ms/batch
+Step 00000300 L_out=83.078 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  253.50 ms/batch
+Step 00000350 L_out=117.989 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  250.78 ms/batch
+Step 00000400 L_out=52.918 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  251.75 ms/batch
+Step 00000450 L_out=52.745 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  254.20 ms/batch
+Step 00000500 L_out=946.066 Acc=0.00 FgbgAcc=0.56 FgbgPer=0.44 ---  255.64 ms/batch
+Step 00000550 L_out=329.833 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.11 ---  258.02 ms/batch
+Step 00000600 L_out=91.289 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  250.69 ms/batch
+Step 00000650 L_out=300.695 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.13 ---  255.14 ms/batch
+Step 00000700 L_out=163.142 Acc=0.00 FgbgAcc=0.90 FgbgPer=0.10 ---  254.97 ms/batch
+Step 00000750 L_out=116.364 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.07 ---  262.25 ms/batch
+Step 00000800 L_out=102.712 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  254.80 ms/batch
+Step 00000850 L_out=275.277 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.13 ---  254.27 ms/batch
+Step 00000900 L_out=663.534 Acc=0.00 FgbgAcc=0.76 FgbgPer=0.24 ---  259.18 ms/batch
+Step 00000950 L_out=47.854 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  251.32 ms/batch
+Step 00001000 L_out=209.600 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  252.24 ms/batch
+Step 00001050 L_out=336.714 Acc=0.00 FgbgAcc=0.81 FgbgPer=0.19 ---  268.29 ms/batch
+Step 00001100 L_out=149.489 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  254.85 ms/batch
+Step 00001150 L_out=196.169 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  252.48 ms/batch
+Step 00001200 L_out=168.052 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.09 ---  267.10 ms/batch
+Step 00001250 L_out=206.085 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.14 ---  263.99 ms/batch
+Step 00001300 L_out=84.314 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  265.02 ms/batch
+Step 00001350 L_out=39.159 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  258.16 ms/batch
+Step 00001400 L_out=102.664 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  252.89 ms/batch
+Step 00001450 L_out=166.958 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.00 ---  263.79 ms/batch
+Step 00001500 L_out=32.211 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  252.87 ms/batch
+Step 00001550 L_out=54.117 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  251.22 ms/batch
+Step 00001600 L_out=113.192 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.04 ---  260.15 ms/batch
+Step 00001650 L_out=184.026 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.08 ---  254.07 ms/batch
+Step 00001700 L_out=66.935 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  256.57 ms/batch
+Step 00001750 L_out=129.551 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  256.85 ms/batch
+Step 00001800 L_out=54.031 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  270.87 ms/batch
+Step 00001850 L_out=17.860 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  258.81 ms/batch
+Step 00001900 L_out=97.433 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  255.34 ms/batch
+Step 00001950 L_out=43.262 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  249.51 ms/batch
+Step 00002000 L_out=94.647 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.02 ---  264.88 ms/batch
+Step 00002050 L_out=156.058 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.09 ---  254.93 ms/batch
+Step 00002100 L_out=391.762 Acc=0.00 FgbgAcc=0.81 FgbgPer=0.19 ---  257.24 ms/batch
+Step 00002150 L_out=45.666 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  254.25 ms/batch
+Step 00002200 L_out=83.179 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  251.62 ms/batch
+Step 00002250 L_out=63.513 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  258.77 ms/batch
+Step 00002300 L_out=459.663 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  262.34 ms/batch
+Step 00002350 L_out=52.421 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  257.27 ms/batch
+Step 00002400 L_out=61.862 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  267.00 ms/batch
+Step 00002450 L_out=84.559 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.03 ---  269.21 ms/batch
+Step 00002500 L_out=54.276 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  265.31 ms/batch
+Step 00002550 L_out=341.880 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.11 ---  256.83 ms/batch
+Step 00002600 L_out=255.847 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.13 ---  266.65 ms/batch
+Step 00002650 L_out=400.453 Acc=0.00 FgbgAcc=0.83 FgbgPer=0.17 ---  255.48 ms/batch
+Step 00002700 L_out=55.337 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  256.03 ms/batch
+Step 00002750 L_out=325.582 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.14 ---  262.87 ms/batch
+Step 00002800 L_out=34.488 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  261.50 ms/batch
+Step 00002850 L_out=47.988 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  251.81 ms/batch
+Step 00002900 L_out=62.241 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  251.04 ms/batch
+Step 00002950 L_out=46.782 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  254.80 ms/batch
+Step 00003000 L_out=83.581 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.04 ---  256.91 ms/batch
+Step 00003050 L_out=61.723 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  259.37 ms/batch
+Step 00003100 L_out=110.479 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  271.14 ms/batch
+Step 00003150 L_out=316.452 Acc=0.00 FgbgAcc=0.85 FgbgPer=0.16 ---  276.05 ms/batch
+Step 00003200 L_out=65.330 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  256.53 ms/batch
+Step 00003250 L_out=166.330 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  263.68 ms/batch
+Step 00003300 L_out=70.906 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  253.71 ms/batch
+Step 00003350 L_out=82.905 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  267.30 ms/batch
+Step 00003400 L_out=146.889 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.01 ---  254.97 ms/batch
+Step 00003450 L_out=82.558 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.06 ---  277.46 ms/batch
+Step 00003500 L_out=84.219 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.06 ---  258.90 ms/batch
+Step 00003550 L_out=171.730 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.11 ---  257.66 ms/batch
+Step 00003600 L_out=138.142 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  265.60 ms/batch
+Step 00003650 L_out=62.013 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.02 ---  270.09 ms/batch
+Step 00003700 L_out=111.439 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  267.96 ms/batch
+Step 00003750 L_out=51.415 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  264.08 ms/batch
+Step 00003800 L_out=127.231 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.08 ---  254.54 ms/batch
+Step 00003850 L_out=57.560 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  276.85 ms/batch
+Step 00000050 L_out=135.099 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  252.14 ms/batch
+Step 00000100 L_out=47.742 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  258.99 ms/batch
+Step 00000150 L_out=98.680 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.13 ---  251.59 ms/batch
+Step 00000200 L_out=28.864 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  259.17 ms/batch
+Step 00000250 L_out=112.821 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.11 ---  262.95 ms/batch
+Step 00000300 L_out=47.393 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  247.73 ms/batch
+Step 00000350 L_out=39.542 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  254.67 ms/batch
+Step 00000400 L_out=50.344 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  254.60 ms/batch
+Step 00000450 L_out=35.327 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  254.88 ms/batch
+Step 00000500 L_out=64.874 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.08 ---  251.91 ms/batch
+Step 00000550 L_out=70.661 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.09 ---  256.02 ms/batch
+Step 00000600 L_out=22.170 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  256.20 ms/batch
+Step 00000650 L_out=34.403 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  250.15 ms/batch
+Step 00000700 L_out=62.579 Acc=0.00 FgbgAcc=0.90 FgbgPer=0.10 ---  261.50 ms/batch
+Step 00000750 L_out=35.107 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  265.61 ms/batch
+Step 00000800 L_out=93.376 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.13 ---  254.86 ms/batch
+Step 00000850 L_out=16.679 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  252.93 ms/batch
+Step 00000900 L_out=21.782 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  251.02 ms/batch
+Step 00000950 L_out=43.579 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  252.41 ms/batch
+Step 00001000 L_out=13.595 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  250.74 ms/batch
+Step 00001050 L_out=243.618 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.08 ---  254.81 ms/batch
+Step 00001100 L_out=19.076 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  265.25 ms/batch
+Step 00001150 L_out=16.342 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  252.50 ms/batch
+Step 00001200 L_out=39.585 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.09 ---  256.59 ms/batch
+Step 00001250 L_out=86.882 Acc=0.00 FgbgAcc=0.85 FgbgPer=0.15 ---  263.98 ms/batch
+Step 00001300 L_out=143.328 Acc=0.00 FgbgAcc=0.88 FgbgPer=0.05 ---  251.41 ms/batch
+Step 00001350 L_out=25.334 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.07 ---  250.97 ms/batch
+Step 00001400 L_out=78.144 Acc=0.00 FgbgAcc=0.85 FgbgPer=0.14 ---  250.83 ms/batch
+Step 00001450 L_out=16.187 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  262.09 ms/batch
+Step 00001500 L_out=55.295 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  266.17 ms/batch
+Step 00001550 L_out=24.651 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  267.60 ms/batch
+Step 00001600 L_out=16.685 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  265.15 ms/batch
+Step 00001650 L_out=35.895 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.08 ---  254.76 ms/batch
+Step 00001700 L_out=96.146 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  247.43 ms/batch
+Step 00001750 L_out=44.523 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.04 ---  251.81 ms/batch
+Step 00001800 L_out=28.520 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.01 ---  269.01 ms/batch
+Step 00001850 L_out=17.770 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.01 ---  254.42 ms/batch
+Step 00001900 L_out=15.497 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  257.62 ms/batch
+Step 00001950 L_out=15.342 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  254.30 ms/batch
+Step 00002000 L_out=19.376 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  271.98 ms/batch
+Step 00002050 L_out=15.986 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  260.29 ms/batch
+Step 00002100 L_out=113.221 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.09 ---  264.39 ms/batch
+Step 00002150 L_out=22.740 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  255.26 ms/batch
+Step 00002200 L_out=24.243 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  256.17 ms/batch
+Step 00002250 L_out=17.218 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  256.24 ms/batch
+Step 00002300 L_out=181.533 Acc=0.00 FgbgAcc=0.75 FgbgPer=0.25 ---  262.94 ms/batch
+Step 00002350 L_out=14.560 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  256.55 ms/batch
+Step 00002400 L_out=15.149 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  255.93 ms/batch
+Step 00002450 L_out=19.851 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  258.67 ms/batch
+Step 00002500 L_out=61.979 Acc=0.00 FgbgAcc=0.86 FgbgPer=0.14 ---  270.07 ms/batch
+Step 00002550 L_out=21.612 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.02 ---  252.29 ms/batch
+Step 00002600 L_out=13.275 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  256.51 ms/batch
+Step 00002650 L_out=33.646 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  256.23 ms/batch
+Step 00002700 L_out=19.696 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.05 ---  249.80 ms/batch
+Step 00002750 L_out=71.094 Acc=0.00 FgbgAcc=0.85 FgbgPer=0.15 ---  255.53 ms/batch
+Step 00002800 L_out=20.364 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  262.34 ms/batch
+Step 00002850 L_out=24.208 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.03 ---  251.75 ms/batch
+Step 00002900 L_out=39.604 Acc=0.00 FgbgAcc=0.91 FgbgPer=0.09 ---  264.07 ms/batch
+Step 00002950 L_out=16.020 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  256.64 ms/batch
+Step 00003000 L_out=98.891 Acc=0.00 FgbgAcc=0.82 FgbgPer=0.18 ---  255.71 ms/batch
+Step 00003050 L_out=12.305 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  260.33 ms/batch
+Step 00003100 L_out=13.233 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  267.28 ms/batch
+Step 00003150 L_out=37.816 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.05 ---  250.27 ms/batch
+Step 00003200 L_out=27.839 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.04 ---  255.16 ms/batch
+Step 00003250 L_out=12.398 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  256.30 ms/batch
+Step 00003300 L_out=91.655 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  253.36 ms/batch
+Step 00003350 L_out=14.844 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  256.63 ms/batch
+Step 00003400 L_out=22.802 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.05 ---  270.66 ms/batch
+Step 00003450 L_out=17.789 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.00 ---  260.62 ms/batch
+Step 00003500 L_out=25.921 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.06 ---  259.53 ms/batch
+Step 00003550 L_out=25.660 Acc=0.00 FgbgAcc=0.96 FgbgPer=0.06 ---  252.78 ms/batch
+Step 00003600 L_out=31.832 Acc=0.00 FgbgAcc=0.93 FgbgPer=0.07 ---  253.85 ms/batch
+Step 00000050 L_out=146.833 Acc=0.00 FgbgAcc=0.89 FgbgPer=0.11 ---  305.79 ms/batch
+Step 00000100 L_out=101.881 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  307.19 ms/batch
+Step 00000150 L_out=92.430 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.00 ---  304.47 ms/batch
+Step 00000200 L_out=41.638 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  308.41 ms/batch
+Step 00000250 L_out=37.471 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  305.97 ms/batch
+Step 00000300 L_out=39.757 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  306.98 ms/batch
+Step 00000050 L_out=486.614 Acc=0.00 FgbgAcc=0.90 FgbgPer=0.10 ---  307.72 ms/batch
+Step 00000100 L_out=150.840 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  306.03 ms/batch
+Step 00000150 L_out=187.048 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  318.42 ms/batch
+Step 00000200 L_out=157.488 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  308.46 ms/batch
+Step 00000250 L_out=167.550 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  304.22 ms/batch
+Step 00000050 L_out=218.172 Acc=0.00 FgbgAcc=0.97 FgbgPer=0.03 ---  303.17 ms/batch
+Step 00000100 L_out=213.445 Acc=0.00 FgbgAcc=0.95 FgbgPer=0.05 ---  307.15 ms/batch
+Step 00000150 L_out=152.155 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  307.12 ms/batch
+Step 00000200 L_out=103.493 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  306.67 ms/batch
+Step 00000250 L_out=127.662 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  305.23 ms/batch
+Step 00000300 L_out=122.038 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  307.01 ms/batch
+Step 00000350 L_out=100.175 Acc=0.00 FgbgAcc=1.00 FgbgPer=0.00 ---  306.72 ms/batch
+Step 00000400 L_out=88.705 Acc=0.00 FgbgAcc=0.98 FgbgPer=0.02 ---  305.98 ms/batch
+Step 00000450 L_out=345.503 Acc=0.00 FgbgAcc=0.92 FgbgPer=0.08 ---  311.72 ms/batch
+Step 00000500 L_out=187.653 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  317.25 ms/batch
+Step 00000550 L_out=104.117 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  305.46 ms/batch
+Step 00000600 L_out=110.091 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  308.15 ms/batch
+Step 00000650 L_out=71.840 Acc=0.00 FgbgAcc=0.99 FgbgPer=0.01 ---  306.51 ms/batch
+Step 00000700 L_out=381.057 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.13 ---  306.23 ms/batch
+Step 00000750 L_out=945.162 Acc=0.00 FgbgAcc=0.74 FgbgPer=0.26 ---  306.59 ms/batch
+Step 00000800 L_out=186.718 Acc=0.00 FgbgAcc=0.94 FgbgPer=0.06 ---  303.56 ms/batch
+Step 00000850 L_out=282.472 Acc=0.00 FgbgAcc=0.87 FgbgPer=0.13 ---  306.54 ms/batch
