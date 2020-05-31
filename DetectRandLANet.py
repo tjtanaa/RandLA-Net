@@ -86,7 +86,7 @@ class Network:
             self.mask_loss =  helper_tf_util.focal_loss(self.pred_fgbg, 
                                         tf.one_hot(self.inputs['fgbg'], depth=self.num_fgbg_attributes), 
                                         weights=None, 
-                                        alpha=0.25, 
+                                        alpha=0.75, 
                                         gamma=2)
             # helper_tf_util.focal_loss(self.reshaped_pred_fgbg, 
             #                     tf.cast(self.reshaped_fgbg, dtype=tf.float32), 
@@ -169,13 +169,14 @@ class Network:
             # self.class_label = tf.squeeze(self.class_label,-1)
             # self.correct_prediction = tf.nn.in_top_k(self.pred_cls, self.class_label, 1)
             # self.accuracy = tf.reduce_mean(tf.cast(self.correct_prediction, tf.float32))
-            self.pred_fgbg = tf.reshape(tf.nn.sigmoid(self.pred_fgbg) , shape=(-1, self.num_fgbg_attributes))
+            self.pred_fgbg = tf.reshape(self.pred_fgbg , shape=(-1, self.num_fgbg_attributes))
             self.gt_fgbg = tf.cast(self.inputs['fgbg'],dtype=tf.int32)
             self.gt_fgbg = tf.reshape(self.gt_fgbg, [-1])
             # self.gt_fgbg = tf.squeeze(self.gt_fgbg,-1)
             self.fgbg_correct_prediction = tf.nn.in_top_k(self.pred_fgbg, self.gt_fgbg, 1)
             self.fgbg_accuracy = tf.reduce_mean(tf.cast(self.fgbg_correct_prediction, tf.float32))
             # self.prob_logits = tf.nn.softmax(self.pred_cls)
+            self.prob_logits = self.pred_fgbg
             
             tf.summary.scalar('learning_rate', self.learning_rate)
             tf.summary.scalar('loss', self.loss)
@@ -255,7 +256,7 @@ class Network:
         return f_out
 
     def unit_test(self, dataset, cfg):
-        ops = [self.logits]
+        ops = [self.logits, self.prob_logits, self.gt_fgbg]
         # , self.mask, self.masked_input, self.masked_bboxes, self.bbox_loss, self.unweighted_losses,
         #         self.gt_fgbg, self.pred_fgbg]  
                 # self.pad_anchor_size]
@@ -269,6 +270,11 @@ class Network:
         print("fgbg shape: ", logits[0].shape)
         for i in range(10):
             print(logits[0][0][i])
+        print("fgbg shape: ", logits[1].shape)
+        print("fgbg shape: ", logits[2].shape)
+        for i in range(10):
+            print(logits[1][i])
+            print(logits[2][i])
         # print("mask shape: ", logits[1].shape)
         # # for i in range(logits[1].shape[1]):
         #     # print(logits[1][0][i])
@@ -311,17 +317,22 @@ class Network:
                         self.loss,
                         self.logits,
                         self.alpha,
+                        self.prob_logits, self.gt_fgbg,
                         self.fgbg_accuracy]
-                _, _, summary, l_out, probs, alpha, fgbg_accuracy= self.sess.run(ops, {self.is_training: True})
+                _, _, summary, l_out, probs, alpha, prob_logits, gt_fgbg, fgbg_accuracy= self.sess.run(ops, {self.is_training: True})
                 self.train_writer.add_summary(summary, self.training_step)
                 t_end = time.time()
                 if self.training_step % 50 == 0:
+                    # for i in range(10):
+                    #     print(prob_logits[i])
+                    #     print(gt_fgbg[i])
                     message = 'Step {:08d} L_out={:5.3f} Acc={:4.2f} FgbgAcc={:4.2f} FgbgPer={:4.2f} ''---{:8.2f} ms/batch'
                     log_out(message.format(self.training_step, l_out, 0, fgbg_accuracy, alpha, 1000 * (t_end - t_start)), self.Log_file)
                 self.training_step += 1
             except tf.errors.OutOfRangeError:
                 self.training_epoch += 1
                 self.sess.run(dataset.train_init_op)
+                print("Epoch ". self.training_epoch)
         # while self.training_epoch < self.config.max_epoch:
         #     t_start = time.time()
         #     try:
