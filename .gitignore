@@ -11,3 +11,4 @@ log_train_Semantic3D1.txt
 /RandLA-Net_builder_v2/
 /lib/datasets/exploration_stats/
 /lib/datasets/__pycache__/
+log_train_KITTI.txt

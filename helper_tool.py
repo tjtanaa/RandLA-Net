@@ -147,7 +147,7 @@ class ConfigSemantic3D:
 
 class ConfigKitti:
     k_n = 16  # KNN
-    num_layers = 4  # Number of layers
+    num_layers = 5  # Number of layers
     num_points = 20000  # 65536 Number of input points
     num_classes = 4  # Number of valid classes
     num_features = 4
@@ -163,8 +163,8 @@ class ConfigKitti:
     class_of_interest: [1,2,3,4]
     difficulty : [1,2,3]
 
-    sub_sampling_ratio = [0.7, 0.7, 0.7, 0.7]  # sampling ratio of random sampling at each layer
-    d_out = [64, 128, 256, 512]  # feature dimension
+    sub_sampling_ratio = [0.7, 0.7, 0.7, 0.7, 0.7]  # sampling ratio of random sampling at each layer
+    d_out = [32, 64, 128, 256, 512]  # feature dimension
     # sub_sampling_ratio = [4,4,2]
     # d_out = [128, 256, 512]  
     
@@ -177,6 +177,7 @@ class ConfigKitti:
     train_sum_dir = 'train_log'
     saving = True
     saving_path = None
+    visual_log_path = "/media/data3/tjtanaa/kitti_dataset/tutorial/training/visual_log"
 
     anchor_size = [[1.5343, 1.62815, 3.87087]]
     

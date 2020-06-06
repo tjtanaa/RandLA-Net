@@ -20,6 +20,7 @@ sys.path.append('/home/tan/tjtanaa/Detect_RandLA-Net')
 
 import lib.utils.calibration as calibration
 import lib.utils.kitti_utils as kitti_utils
+import lib.utils.iou3d_python as iou3d
 
 # from helper_tool import ConfigKitti as cfg
 CAM = 2
@@ -264,6 +265,8 @@ if __name__ == '__main__':
         for i, bbox3d_corners in enumerate(bboxes3d_rotated_corners):
             # print("bboxes3d_rotated_corners: ", bboxes3d_rotated_corners[i])
             box3d_roi_inds = kitti_utils.in_hull(points[:,:3], bbox3d_corners)
+            iou_3d, iou_2d = iou3d.box3d_iou(bbox3d_corners, bbox3d_corners - 0.0001)
+            print("iou_3d: ", iou_3d, "\t iou_2d: ", iou_2d)
             # box3d_roi_inds = kitti_utils.in_hull(bbox3d_corners[:,:3], bbox3d_corners)
             # print("xmin: ", np.min(points[:,0]), " xmax: ", np.max(points[:,0]))
             # print("ymin: ", np.min(points[:,1]), " ymax: ", np.max(points[:,1]))
@@ -370,7 +373,7 @@ if __name__ == '__main__':
                     "Q3",
                     "IQR"
     ]
-
+    exit()
 
     import csv
     import shutil

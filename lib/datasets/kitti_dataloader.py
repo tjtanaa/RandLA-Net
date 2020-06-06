@@ -98,7 +98,7 @@ class KittiLoader(object):
         resampled_features = pc[indices,:4]
         resampled_bboxes = target[indices, :self.num_target_attributes - 2] # [x,y,z,h,w,l,ry]
         resampled_fgbg = target[indices, self.num_target_attributes-2] #.reshape(-1,1) # [fgbg]
-        resampled_cls = target[indices, self.num_target_attributes-1] #.reshape(-1,1) # [cls]
+        resampled_cls = target[indices, self.num_target_attributes-1] - 1.0 #.reshape(-1,1) # [cls]
         # resampled_cls_one_hot = None
         # if self.num_classes > 1:
         #     # print("num class > 1")
