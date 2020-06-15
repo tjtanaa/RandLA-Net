@@ -1,0 +1,4 @@
+Class: 2	 Count: 840	 Percentage: 0.23622047244094488
+Class: 1	 Count: 2782	 Percentage: 0.7823397075365579
+Class: 3	 Count: 409	 Percentage: 0.11501687289088863
+Class: 4	 Count: 668	 Percentage: 0.18785151856017998

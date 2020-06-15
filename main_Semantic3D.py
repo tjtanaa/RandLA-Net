@@ -13,7 +13,7 @@ import pickle, argparse, os
 class Semantic3D:
     def __init__(self):
         self.name = 'Semantic3D'
-        self.path = '/data/semantic3d'
+        self.path = '/media/data3/tjtanaa/semantic3d'
         self.label_to_names = {0: 'unlabeled',
                                1: 'man-made terrain',
                                2: 'natural terrain',
@@ -327,6 +327,8 @@ class Semantic3D:
         self.batch_test_data = self.batch_test_data.prefetch(cfg.val_batch_size)
 
         iter = tf.data.Iterator.from_structure(self.batch_train_data.output_types, self.batch_train_data.output_shapes)
+
+
         self.flat_inputs = iter.get_next()
         self.train_init_op = iter.make_initializer(self.batch_train_data)
         self.val_init_op = iter.make_initializer(self.batch_val_data)
