@@ -329,7 +329,8 @@ class Network:
             self.fgbg_correct_prediction = tf.nn.in_top_k(self.pred_fgbg, self.gt_fgbg, 1)
             self.fgbg_accuracy = tf.reduce_mean(tf.cast(self.fgbg_correct_prediction, tf.float32))
             # self.prob_logits = tf.nn.softmax(self.pred_cls)
-            self.prob_logits = self.pred_fgbg
+            self.prob_fgbg = tf.nn.sigmoid(self.pred_fgbg)
+            self.prob_cls = tf.nn.softmax(self.cls_logits)
             
 
 
@@ -341,6 +342,9 @@ class Network:
             tf.summary.scalar('fgbg_accuracy', self.fgbg_accuracy)
             tf.summary.scalar('num_fg_points', self.num_fg_points)
             tf.summary.scalar('fgbg_ratio', self.fgbg_ratio)
+            tf.summary.scalar('num_non_zero_cls', self.num_non_zero_cls)
+            tf.summary.scalar('non_zero_cls_ratio', self.non_zero_cls_ratio)
+            
 
         my_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
         self.saver = tf.train.Saver(my_vars, max_to_keep=100)
@@ -356,6 +360,7 @@ class Network:
         + '_alpha_' + str(self.config.alpha) \
         + '_gamma_' + str(self.config.gamma))
         self.logdir = os.path.join(self.config.train_sum_dir, logdir)
+        self.config.visual_log_path = os.path.join(self.config.visual_log_path, logdir)
         if not os.path.exists(self.logdir):
             os.makedirs(self.logdir)
         self.train_writer = tf.summary.FileWriter(self.logdir, self.sess.graph)
@@ -452,19 +457,21 @@ class Network:
                         self.merged,
                         self.loss,
                         # self.logits,
-                        self.pred_fgbg,
+                        # self.pred_fgbg,
+                        self.prob_fgbg,
+                        self.prob_cls,
+                        self.interested_pc,
                         self.fgbg_ratio,
                         self.non_zero_cls_ratio,
-                        self.prob_logits, self.gt_fgbg,
-                        self.interested_pc,
-                        self.pred_fgbg_label,
+                        # self.gt_fgbg,
+                        # self.pred_fgbg_label,
                         self.fgbg_accuracy,
                         self.classification_accuracy,
-                        self.masked_target_cls,
-                        self.masked_pred_cls
+                        self.masked_pred_cls,
+                        self.masked_target_cls
                         ]
-                _, _, summary, l_out, probs, alpha, beta, prob_logits, gt_fgbg, interested_pc,\
-                        pred_fgbg_label, fgbg_accuracy, acc, target_cls , pred_cls= self.sess.run(ops, {self.is_training: True})
+                _, _, summary, l_out, prob_fgbg, prob_cls  ,interested_pc, fgbg_ratio, non_zero_cls_ratio,\
+                        fgbg_accuracy, cls_acc, pred_cls, target_cls = self.sess.run(ops, {self.is_training: True})
                 self.train_writer.add_summary(summary, self.training_step)
                 
                 # # Calculate the confusion matrix.
@@ -482,13 +489,15 @@ class Network:
                     #     print(prob_logits[i])
                     #     print(gt_fgbg[i])
                     message = 'Step {:08d} L_out={:5.3f} Acc={:4.5f} FgbgAcc={:4.5f} FgbgPer={:4.5f} NonZeroClsPer={:4.5f} ''---{:8.2f} ms/batch {}' 
-                    log_out(message.format(self.training_step, l_out, acc, fgbg_accuracy, alpha, beta, 1000 * (t_end - t_start), str(set(target_cls))), self.Log_file)
+                    log_out(message.format(self.training_step, l_out, cls_acc, fgbg_accuracy, fgbg_ratio, non_zero_cls_ratio, 1000 * (t_end - t_start), str(set(target_cls))), self.Log_file)
                     
-                    if (self.training_epoch > 100) and (self.training_step % 100 == 0) and (self.training_epoch % 20 == 0):
+                    if (self.training_step % 200 == 0) and (self.training_epoch % 5 == 0):
                         interested_pc_output_path = os.path.join(self.config.visual_log_path, 'interested_pc_' + str(self.training_step) + '.bin')
                         pred_fgbg_label_output_path = os.path.join(self.config.visual_log_path, 'pred_fgbg_label_' + str(self.training_step) + '.bin')
+                        pred_class_label_output_path = os.path.join(self.config.visual_log_path, 'pred_class_label_' + str(self.training_step) + '.bin')
                         interested_pc.astype('float32').tofile(interested_pc_output_path)
-                        pred_fgbg_label.astype('float32').tofile(pred_fgbg_label_output_path)
+                        prob_fgbg.astype('float32').tofile(pred_fgbg_label_output_path)
+                        prob_cls.astype('float32').tofile(pred_class_label_output_path)
                         
                         # Calculate the confusion matrix.
                         cm = sklearn.metrics.confusion_matrix(target_cls, np.argmax(pred_cls,axis=-1))
