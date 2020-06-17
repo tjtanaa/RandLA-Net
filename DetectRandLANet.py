@@ -360,9 +360,16 @@ class Network:
         + '_alpha_' + str(self.config.alpha) \
         + '_gamma_' + str(self.config.gamma))
         self.logdir = os.path.join(self.config.train_sum_dir, logdir)
-        self.config.visual_log_path = os.path.join(self.config.visual_log_path, logdir)
         if not os.path.exists(self.logdir):
             os.makedirs(self.logdir)
+        import shutil
+        # make a copy of the current config file to the train_log
+        shutil.copy('helper_tool.py', os.path.join(self.logdir, 'helpter_tool.py'))
+        shutil.copy('DetectRandLANet.py', os.path.join(self.logdir, 'DetectRandLANet.py'))
+
+        self.config.visual_log_path = os.path.join(self.config.visual_log_path, logdir)
+        if not os.path.exists(self.config.visual_log_path):
+            os.makedirs(self.config.visual_log_path)
         self.train_writer = tf.summary.FileWriter(self.logdir, self.sess.graph)
         
         self.sess.run(tf.global_variables_initializer())
@@ -402,8 +409,8 @@ class Network:
 
 
         # fgbg head
-        fgbg_layer_fc1 = helper_tf_util.conv2d(f_encoder_list[-1], 64, [1, 1], 'fgbg_fc1', [1, 1], 'VALID', True, is_training)
-        fgbg_layer_fc2 = helper_tf_util.conv2d(fgbg_layer_fc1, 32, [1, 1], 'fgbg_fc2', [1, 1], 'VALID', True, is_training)
+        fgbg_layer_fc1 = helper_tf_util.conv2d(feature, 256, [1, 1], 'fgbg_fc1', [1, 1], 'VALID', True, is_training)
+        fgbg_layer_fc2 = helper_tf_util.conv2d(fgbg_layer_fc1, 256, [1, 1], 'fgbg_fc2', [1, 1], 'VALID', True, is_training)
         fgbg_layer_drop = helper_tf_util.dropout(fgbg_layer_fc2, keep_prob=0.5, is_training=is_training, scope='fgbg_dp1')
         fgbg_layer_fc3 = helper_tf_util.conv2d(fgbg_layer_drop, self.num_fgbg_attributes, [1, 1], 'fgbg_fc', [1, 1], 'VALID', False,
                                             is_training, activation_fn=None)
@@ -412,8 +419,8 @@ class Network:
 
         # classification head
 
-        cls_layer_fc1 = helper_tf_util.conv2d(f_encoder_list[-1], 64, [1, 1], 'cls_fc1', [1, 1], 'VALID', True, is_training)
-        cls_layer_fc2 = helper_tf_util.conv2d(cls_layer_fc1, 32, [1, 1], 'cls_fc2', [1, 1], 'VALID', True, is_training)
+        cls_layer_fc1 = helper_tf_util.conv2d(feature, 256, [1, 1], 'cls_fc1', [1, 1], 'VALID', True, is_training)
+        cls_layer_fc2 = helper_tf_util.conv2d(cls_layer_fc1, 256, [1, 1], 'cls_fc2', [1, 1], 'VALID', True, is_training)
         cls_layer_drop = helper_tf_util.dropout(cls_layer_fc2, keep_prob=0.5, is_training=is_training, scope='cls_dp1')
         cls_layer_fc3 = helper_tf_util.conv2d(cls_layer_drop, self.num_classes, [1, 1], 'cls_fc', [1, 1], 'VALID', False,
                                             is_training, activation_fn=None)

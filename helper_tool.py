@@ -170,7 +170,7 @@ class ConfigKitti:
     
     noise_init = 3.5  # noise initial parameter
     max_epoch = 300  # maximum epoch during training
-    learning_rate = 1e-3  # initial learning rate
+    learning_rate = 1e-1  # initial learning rate
     lr_decays = {i: 0.95 for i in range(0, 500)}  # decay rate of learning rate
 
     train_data_path = "/media/data3/tjtanaa/kitti_dataset/tutorial/training"
