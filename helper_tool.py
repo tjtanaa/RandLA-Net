@@ -118,7 +118,7 @@ class ConfigSemantic3D:
     num_classes = 8  # Number of valid classes
     sub_grid_size = 0.06  # preprocess_parameter
 
-    batch_size = 2  # 5 batch_size during training
+    batch_size = 5  # 5 batch_size during training
     val_batch_size = 16  # batch_size during validation and test
     train_steps = 500  # Number of steps per epochs
     val_steps = 100  # Number of validation steps per epoch
@@ -169,8 +169,8 @@ class ConfigKitti:
     # d_out = [128, 256, 512]  
     
     noise_init = 3.5  # noise initial parameter
-    max_epoch = 100  # maximum epoch during training
-    learning_rate = 1e-2  # initial learning rate
+    max_epoch = 300  # maximum epoch during training
+    learning_rate = 1e-1  # initial learning rate
     lr_decays = {i: 0.95 for i in range(0, 500)}  # decay rate of learning rate
 
     train_data_path = "/media/data3/tjtanaa/kitti_dataset/tutorial/training"
@@ -180,6 +180,10 @@ class ConfigKitti:
     visual_log_path = "/media/data3/tjtanaa/kitti_dataset/tutorial/training/visual_log"
 
     anchor_size = [[1.5343, 1.62815, 3.87087]]
+
+    # this is the parameter for focal loss
+    alpha = 0.25
+    gamma = 2
     
 
 

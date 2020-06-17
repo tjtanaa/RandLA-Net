@@ -7,12 +7,65 @@ import tensorflow as tf
 import numpy as np
 import helper_tf_util
 import time
-
+import io
+import matplotlib.pyplot as plt
+import sklearn
+import itertools
+from datetime import datetime
 
 def log_out(out_str, f_out):
     f_out.write(out_str + '\n')
     f_out.flush()
     print(out_str)
+
+
+def plot_to_image(figure):
+    """Converts the matplotlib plot specified by 'figure' to a PNG image and
+    returns it. The supplied figure is closed and inaccessible after this call."""
+    # Save the plot to a PNG in memory.
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    # Closing the figure prevents it from being displayed directly inside
+    # the notebook.
+    plt.close(figure)
+    buf.seek(0)
+    # Convert PNG buffer to TF image
+    image = tf.image.decode_png(buf.getvalue(), channels=4)
+    # Add the batch dimension
+    image = tf.expand_dims(image, 0)
+    return image
+
+def plot_confusion_matrix(cm, class_names=None):
+    """
+    Returns a matplotlib figure containing the plotted confusion matrix.
+
+    Args:
+        cm (array, shape = [n, n]): a confusion matrix of integer classes
+        class_names (array, shape = [n]): String names of the integer classes
+    """
+    if class_names is None:
+        class_names = [i for i in range(len(cm))]
+    figure = plt.figure(figsize=(8, 8))
+    plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+    plt.title("Confusion matrix")
+    plt.colorbar()
+    tick_marks = np.arange(len(class_names))
+    plt.xticks(tick_marks, class_names, rotation=45)
+    plt.yticks(tick_marks, class_names)
+
+    # Normalize the confusion matrix.
+    cm = np.around(cm.astype('float') / cm.sum(axis=1)[:, np.newaxis], decimals=2)
+
+    # Use white text if squares are dark; otherwise black.
+    threshold = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        color = "white" if cm[i, j] > threshold else "black"
+        plt.text(j, i, cm[i, j], horizontalalignment="center", color=color)
+
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    return figure
 
 
 class Network:
@@ -27,6 +80,7 @@ class Network:
         self.num_bboxes_attributes = 7
         self.num_fgbg_attributes = 2
         self.num_output_attributes = self.config.num_output_attributes
+        # self.global_step = 0
         # Path of the result folder
         if self.config.saving:
             if self.config.saving_path is None:
@@ -58,23 +112,124 @@ class Network:
             # self.class_weights = DP.get_class_weights(dataset.name)
             self.Log_file = open('log_train_' + dataset.name + '.txt', 'a')
 
+        # with tf.variable_scope('layers'):
+        #     # self.bboxes_pred , self.fgbg_logits , self.cls_logits = self.inference(self.inputs, self.is_training)
+        #     self.logits = self.inference(self.inputs, self.is_training)
+
+
+        #####################################################################
+        # single head predictor: 1. fgbg classifation + class classification #
+        #####################################################################
+        # with tf.variable_scope('loss'):
+        #     # self.logits = tf.reshape(self.logits, [config.batch_size, -1, self.num_output_attributes])
+        #     self.logits = tf.reshape(self.logits, [config.batch_size, -1, self.num_fgbg_attributes + self.num_classes])
+
+        #     self.num_fg = tf.math.reduce_sum(self.inputs['fgbg']) # (B, N) => ()
+        #     self.alpha = tf.divide(tf.cast(self.num_fg, dtype=tf.float32), 
+        #             tf.cast(
+        #                 tf.shape(self.inputs['fgbg'])[0]* tf.shape(self.inputs['fgbg'])[1]
+        #                 , dtype=tf.float32))
+            
+        #     # compute the loss of the fgbg
+        #     # self.pred_fgbg = self.logits[:,:,
+        #     #     self.num_bboxes_attributes:self.num_bboxes_attributes+ self.num_fgbg_attributes]
+            
+        #     # self.logits = tf.reshape(self.logits, [config.batch_size, -1, self.num_fgbg_attributes + self.num_classes])
+
+            
+        #     # focal loss takes in [batch_size, num_anchors, num_classes]
+
+        #     self.pred_fgbg = self.logits[:, :, :self.num_fgbg_attributes]
+            
+
+        #     self.mask_loss =  helper_tf_util.focal_loss(self.pred_fgbg, 
+        #                                 tf.one_hot(self.inputs['fgbg'], depth=self.num_fgbg_attributes), 
+        #                                 weights=None, 
+        #                                 alpha=0.25, 
+        #                                 gamma=2)
+
+        #     self.interested_pc = self.inputs['xyz'][0]        
+        #     self.pred_fgbg_label = tf.equal(tf.cast(tf.argmax(tf.nn.sigmoid(self.logits),axis=-1),dtype=tf.int32), tf.cast(self.inputs['fgbg'],dtype=tf.int32))          
+ 
+        #     # compute the loss for classification
+        #     self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=[-1])
+        #     self.pred_cls = tf.reshape(self.logits[:,:, -self.num_classes:], shape=[-1, self.num_classes])
+        #     self.reshaped_target_cls = tf.reshape(self.inputs['class_label'], shape=[-1])
+        #     self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
+        #     self.masked_target_cls = tf.boolean_mask(self.reshaped_target_cls, self.mask)
+        #     self.masked_one_hot_cls = tf.one_hot(self.masked_target_cls, depth=self.num_classes)
+        #     self.unweighted_losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.masked_pred_cls, labels=self.masked_one_hot_cls)
+        #     self.cls_loss = tf.cond(self.num_fg > 0, lambda: tf.reduce_mean(self.unweighted_losses), 
+        #         lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
+            
+        #     # self.mask = tf.reshape(self.pred_fgbg_label,shape=[-1])
+        #     # self.pred_cls = tf.reshape(self.logits[:,:, -self.num_classes:], shape=[-1, self.num_classes])
+        #     # self.valid_gt_label = tf.boolean_mask(tf.reshape(self.inputs['class_label'],shape=[-1]), self.mask)
+        #     # self.one_hot_cls = tf.one_hot(self.valid_gt_label, depth=self.num_classes)
+        #     # self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
+        #     # self.num_active_points = tf.reduce_sum(tf.cast(self.mask, dtype=tf.int32))
+        #     # self.unweighted_losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.masked_pred_cls, labels=self.one_hot_cls)
+        #     # self.cls_loss = tf.cond(self.num_active_points > 0, lambda: tf.reduce_mean(self.unweighted_losses), 
+        #     #     lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
+            
+
+            
+
+
+        #     # compute the loss for the bounding boxes
+        #     # self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=(-1,1))
+        #     # # self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=(-1, tf.shape(self.inputs['fgbg'])[-1]))
+        #     # self.mask = tf.squeeze(self.mask, -1)
+        #     # self.num_fg = tf.math.reduce_sum(tf.cast(self.mask, dtype=tf.int32))
+        #     # self.reshaped_input = tf.reshape(self.inputs['coors'], shape=(-1, tf.shape(self.inputs['coors'])[-1]))
+        #     # self.reshaped_bboxes = tf.reshape(self.inputs['bboxes'], shape=(-1, tf.shape(self.inputs['bboxes'])[-1]))
+            
+        #     # self.masked_input = tf.boolean_mask(self.reshaped_input, self.mask)
+        #     # self.masked_bboxes = tf.boolean_mask(self.reshaped_bboxes, self.mask)
+
+        #     # self.pred_bboxes = tf.reshape(self.logits[:,:, :self.num_bboxes_attributes], [-1, self.num_bboxes_attributes])
+        #     # self.masked_pred_bboxes = tf.boolean_mask(self.pred_bboxes, self.mask)
+        #     # pad_zero = tf.zeros([tf.shape(self.masked_input)[0], 1])
+        #     # pad_anchor_size = tf.convert_to_tensor(self.config.anchor_size)
+        #     # pad_anchor_size = tf.tile(pad_anchor_size, [tf.shape(self.masked_input)[0] ,1])
+        #     # self.masked_input = tf.concat([self.masked_input,pad_anchor_size,  pad_zero],-1)
+        #     # self.actual_pred_bboxes = self.masked_input + self.masked_pred_bboxes
+        #     # self.bbox_loss = 0
+        #     # for i in range(7):
+        #     #     self.bbox_loss += tf.losses.huber_loss(
+        #     #         self.masked_bboxes[:,i],
+        #     #         self.actual_pred_bboxes[:,i],
+        #     #         weights=1.0,
+        #     #         delta=1.0,
+        #     #     )
+
+            
+
+        #     self.loss = self.mask_loss # + self.bbox_loss #+ self.cls_loss
+        #     # self.loss = self.mask_loss +  self.cls_loss
+        #     # self.loss = self.cls_loss
+
+        #####################################################################
+        # two different heads: 1. fgbg classifation 2. class classification #
+        #####################################################################
+
         with tf.variable_scope('layers'):
             # self.bboxes_pred , self.fgbg_logits , self.cls_logits = self.inference(self.inputs, self.is_training)
-            self.logits = self.inference(self.inputs, self.is_training)
+            self.pred_fgbg, self.cls_logits = self.inference(self.inputs, self.is_training)
 
-        #####################################################################
-        # Ignore the invalid point (unlabeled) when calculating the loss #
-        #####################################################################
+
         with tf.variable_scope('loss'):
             # self.logits = tf.reshape(self.logits, [config.batch_size, -1, self.num_output_attributes])
-            # self.logits = tf.reshape(self.logits, [config.batch_size, -1, self.num_fgbg_attributes + self.num_classes])
+            # self.logits = tf.reshape(self.logits, [config.batch_size, -1, self.num_classes])
 
-            self.num_fg = tf.math.reduce_sum(self.inputs['fgbg']) # (B, N) => ()
-            self.alpha = tf.divide(tf.cast(self.num_fg, dtype=tf.float32), 
+            self.num_fg_points = tf.math.reduce_sum(self.inputs['fgbg']) # (B, N) => ()
+            self.fgbg_ratio = tf.divide(tf.cast(self.num_fg_points, dtype=tf.float32), 
                     tf.cast(
                         tf.shape(self.inputs['fgbg'])[0]* tf.shape(self.inputs['fgbg'])[1]
                         , dtype=tf.float32))
-            
+
+
+
             # compute the loss of the fgbg
             # self.pred_fgbg = self.logits[:,:,
             #     self.num_bboxes_attributes:self.num_bboxes_attributes+ self.num_fgbg_attributes]
@@ -84,113 +239,60 @@ class Network:
             
             # focal loss takes in [batch_size, num_anchors, num_classes]
 
-            self.pred_fgbg = self.logits[:, :, :self.num_fgbg_attributes]
-            
-
             self.mask_loss =  helper_tf_util.focal_loss(self.pred_fgbg, 
                                         tf.one_hot(self.inputs['fgbg'], depth=self.num_fgbg_attributes), 
                                         weights=None, 
-                                        alpha=0.25, 
-                                        gamma=2)
-            # helper_tf_util.focal_loss(self.reshaped_pred_fgbg, 
-            #                     tf.cast(self.reshaped_fgbg, dtype=tf.float32), 
-            #                     weights=None, 
-            #                     alpha=0.25, 
-            #                     gamma=2)
+                                        alpha=self.config.alpha, 
+                                        gamma=self.config.gamma)
 
             self.interested_pc = self.inputs['xyz'][0]        
-            self.pred_fgbg_label = tf.equal(tf.cast(tf.argmax(tf.nn.sigmoid(self.logits),axis=-1),dtype=tf.int32), tf.cast(self.inputs['fgbg'],dtype=tf.int32))          
+            self.pred_fgbg_label = tf.equal(tf.cast(tf.argmax(tf.nn.sigmoid(self.pred_fgbg),axis=-1)
+                                    ,dtype=tf.int32), tf.cast(self.inputs['fgbg'],dtype=tf.int32))          
  
             # compute the loss for classification
+            self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=[-1])
+            self.pred_cls = tf.reshape(self.cls_logits, shape=[-1, self.num_classes])
+            self.reshaped_target_cls = tf.reshape(self.inputs['class_label'], shape=[-1])
+            self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
+            self.masked_target_cls = tf.boolean_mask(self.reshaped_target_cls, self.mask)
+            self.masked_one_hot_cls = tf.one_hot(self.masked_target_cls, depth=self.num_classes)
+            self.unweighted_losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.masked_pred_cls, labels=self.masked_one_hot_cls)
+            self.cls_loss = tf.cond(self.num_fg_points > 0, lambda: tf.reduce_mean(self.unweighted_losses), 
+                lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
+
+
+            # compute percentage of points which are not class 0
+            self.num_non_zero_cls = tf.math.reduce_sum(tf.cast(tf.greater(self.masked_target_cls, 0), dtype=tf.float32))
+            self.non_zero_cls_ratio = tf.divide(self.num_non_zero_cls, 
+                    tf.cast(
+                        tf.shape(self.inputs['class_label'])[0]* tf.shape(self.inputs['class_label'])[1]
+                        , dtype=tf.float32))
+            # self.confusion = tf.confusion_matrix(labels=self.masked_target_cls, 
+            #     predictions=self.masked_pred_cls, num_classes=self.num_classes)
+
+            # self.mask = tf.reshape(self.pred_fgbg_label,shape=[-1])
             # self.pred_cls = tf.reshape(self.logits[:,:, -self.num_classes:], shape=[-1, self.num_classes])
-            # self.reshaped_cls = tf.one_hot(self.inputs['class_label'], depth=self.num_classes)
-            # self.reshaped_cls = tf.reshape(self.reshaped_cls, shape=(-1, self.num_classes))
-            
-            # self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
-            # self.masked_cls = tf.boolean_mask(self.reshaped_cls, self.mask)
-            # self.unweighted_losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.masked_pred_cls, labels=self.masked_cls)
-            # self.cls_loss = tf.reduce_mean(self.unweighted_losses)
-
-            # self.mask = tf.equal(self.inputs['fgbg'], 1)
-
-            # self.effective_mask = tf.logical_and(self.mask, self.pred_fgbg_label)       
-
-            # self.effective_mask = tf.reshape(self.effective_mask, shape=[-1])
-
-            # # self.cls_loss = 0
-            # self.pred_cls = tf.reshape(self.logits[:,:, -self.num_classes:], shape=[-1, self.num_classes])
-
-            # self.valid_gt_label = tf.boolean_mask(tf.reshape(self.inputs['class_label'],shape=[-1]), self.effective_mask)
+            # self.valid_gt_label = tf.boolean_mask(tf.reshape(self.inputs['class_label'],shape=[-1]), self.mask)
             # self.one_hot_cls = tf.one_hot(self.valid_gt_label, depth=self.num_classes)
-
-            # self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.effective_mask)
-            # self.num_active_points = tf.reduce_sum(tf.cast(self.effective_mask, dtype=tf.int32))
-
+            # self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
+            # self.num_active_points = tf.reduce_sum(tf.cast(self.mask, dtype=tf.int32))
             # self.unweighted_losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.masked_pred_cls, labels=self.one_hot_cls)
+            # self.cls_loss = tf.cond(self.num_active_points > 0, lambda: tf.reduce_mean(self.unweighted_losses), 
+            #     lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
             
-            # self.cls_loss = tf.cond(self.num_active_points > 0, lambda: tf.reduce_mean(self.unweighted_losses), lambda: 0.0)
-            
-
-            
-
-
-            # compute the loss for the bounding boxes
-            # self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=(-1,1))
-            # # self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=(-1, tf.shape(self.inputs['fgbg'])[-1]))
-            # self.mask = tf.squeeze(self.mask, -1)
-            # self.num_fg = tf.math.reduce_sum(tf.cast(self.mask, dtype=tf.int32))
-            # self.reshaped_input = tf.reshape(self.inputs['coors'], shape=(-1, tf.shape(self.inputs['coors'])[-1]))
-            # self.reshaped_bboxes = tf.reshape(self.inputs['bboxes'], shape=(-1, tf.shape(self.inputs['bboxes'])[-1]))
-            
-            # self.masked_input = tf.boolean_mask(self.reshaped_input, self.mask)
-            # self.masked_bboxes = tf.boolean_mask(self.reshaped_bboxes, self.mask)
-
-            # self.pred_bboxes = tf.reshape(self.logits[:,:, :self.num_bboxes_attributes], [-1, self.num_bboxes_attributes])
-            # self.masked_pred_bboxes = tf.boolean_mask(self.pred_bboxes, self.mask)
-            # pad_zero = tf.zeros([tf.shape(self.masked_input)[0], 1])
-            # pad_anchor_size = tf.convert_to_tensor(self.config.anchor_size)
-            # pad_anchor_size = tf.tile(pad_anchor_size, [tf.shape(self.masked_input)[0] ,1])
-            # self.masked_input = tf.concat([self.masked_input,pad_anchor_size,  pad_zero],-1)
-            # self.actual_pred_bboxes = self.masked_input + self.masked_pred_bboxes
-            # self.bbox_loss = 0
-            # for i in range(7):
-            #     self.bbox_loss += tf.losses.huber_loss(
-            #         self.masked_bboxes[:,i],
-            #         self.actual_pred_bboxes[:,i],
-            #         weights=1.0,
-            #         delta=1.0,
-            #     )
 
             
 
-            self.loss = self.mask_loss # + self.bbox_loss #+ self.cls_loss
-            # self.loss = self.mask_loss + self.cls_loss
-            # self.loss = self.cls_loss
+            # self.loss = self.mask_loss # + self.bbox_loss #+ self.cls_loss
+            self.loss = self.mask_loss +  self.cls_loss
 
-
-        #     # self.labels = tf.reshape(self.labels, [-1])
-
-        #     # Boolean mask of points that should be ignored
-        #     ignored_bool = tf.zeros_like(self.labels, dtype=tf.bool)
-        #     for ign_label in self.config.ignored_label_inds:
-        #         ignored_bool = tf.logical_or(ignored_bool, tf.equal(self.labels, ign_label))
-
-        #     # Collect logits and labels that are not ignored
-        #     valid_idx = tf.squeeze(tf.where(tf.logical_not(ignored_bool)))
-        #     valid_logits = tf.gather(self.logits, valid_idx, axis=0)
-        #     valid_labels_init = tf.gather(self.labels, valid_idx, axis=0)
-
-        #     # Reduce label values in the range of logit shape
-        #     reducing_list = tf.range(self.config.num_classes, dtype=tf.int32)
-        #     inserted_value = tf.zeros((1,), dtype=tf.int32)
-        #     for ign_label in self.config.ignored_label_inds:
-        #         reducing_list = tf.concat([reducing_list[:ign_label], inserted_value, reducing_list[ign_label:]], 0)
-        #     valid_labels = tf.gather(reducing_list, valid_labels_init)
-
-        #     self.loss = self.get_loss(valid_logits, valid_labels, self.class_weights)
 
         with tf.variable_scope('optimizer'):
+            # self.global_step = tf.Variable(0, trainable=False)
             self.learning_rate = tf.Variable(config.learning_rate, trainable=False, name='learning_rate')
+            # self.decayed_lr = tf.train.exponential_decay(self.learning_rate,
+            #                             self.training_step, 10000,
+            #                             0.98, staircase=True)
             opt_func = tf.train.AdamOptimizer(self.learning_rate) # .minimize(self.loss)
             tvars = tf.trainable_variables()
 
@@ -198,18 +300,27 @@ class Network:
 
             self.train_op = opt_func.apply_gradients(zip(grads, tvars))
             self.extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+            # self.global_step += 1
 
         with tf.variable_scope('results'):
             # self.class_label = tf.cast(self.inputs['class_label'],dtype=tf.int32)
             # self.class_label = tf.reshape(self.class_label, shape=(-1,1))
             # self.class_label = tf.squeeze(self.class_label,-1)
-            # self.accuracy = 1.0
-            # self.correct_prediction = tf.nn.in_top_k(self.pred_cls, self.valid_gt_label, 1)
+            # self.accuracy = tf.convert_to_tensor(-1.0)
+            # self.correct_prediction = tf.nn.in_top_k(self.masked_pred_cls, self.masked_target_cls, 1)
             # self.accuracy = tf.reduce_mean(tf.cast(self.correct_prediction, tf.float32))
             # self.pred_cls_label = tf.cast(tf.argmax(tf.nn.softmax(self.masked_pred_cls),-1), dtype=tf.int32)
             # self.accuracy = tf.reduce_mean(tf.cast(tf.equal(self.pred_cls_label, self.valid_gt_label),dtype=tf.float32))
+
+            self.classification_accuracy = tf.cond(self.num_fg_points > 0, 
+            lambda:  tf.reduce_mean(tf.cast(
+                tf.nn.in_top_k(self.masked_pred_cls, self.masked_target_cls, 1)
+                , tf.float32)), lambda: tf.convert_to_tensor(-1.0))
+
             # self.accuracy = tf.cond(self.num_active_points > 0, 
-            # lambda:  tf.reduce_mean(tf.cast(self.correct_prediction, tf.float32)), lambda: 1.0)
+            # lambda:  tf.reduce_mean(tf.cast(
+            #     tf.nn.in_top_k(self.masked_pred_cls, self.valid_gt_label, 1)
+            #     , tf.float32)), lambda: tf.convert_to_tensor(-1.0))
 
             self.pred_fgbg = tf.reshape(self.pred_fgbg , shape=(-1, self.num_fgbg_attributes))
             self.gt_fgbg = tf.cast(self.inputs['fgbg'],dtype=tf.int32)
@@ -218,12 +329,22 @@ class Network:
             self.fgbg_correct_prediction = tf.nn.in_top_k(self.pred_fgbg, self.gt_fgbg, 1)
             self.fgbg_accuracy = tf.reduce_mean(tf.cast(self.fgbg_correct_prediction, tf.float32))
             # self.prob_logits = tf.nn.softmax(self.pred_cls)
-            self.prob_logits = self.pred_fgbg
+            self.prob_fgbg = tf.nn.sigmoid(self.pred_fgbg)
+            self.prob_cls = tf.nn.softmax(self.cls_logits)
             
+
+
             tf.summary.scalar('learning_rate', self.learning_rate)
+            tf.summary.scalar('fgbg_loss', self.mask_loss)
+            tf.summary.scalar('classification_loss', self.cls_loss)
             tf.summary.scalar('loss', self.loss)
-            # tf.summary.scalar('accuracy', self.accuracy)
+            tf.summary.scalar('classification_accuracy', self.classification_accuracy)
             tf.summary.scalar('fgbg_accuracy', self.fgbg_accuracy)
+            tf.summary.scalar('num_fg_points', self.num_fg_points)
+            tf.summary.scalar('fgbg_ratio', self.fgbg_ratio)
+            tf.summary.scalar('num_non_zero_cls', self.num_non_zero_cls)
+            tf.summary.scalar('non_zero_cls_ratio', self.non_zero_cls_ratio)
+            
 
         my_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
         self.saver = tf.train.Saver(my_vars, max_to_keep=100)
@@ -231,7 +352,26 @@ class Network:
         c_proto.gpu_options.allow_growth = True
         self.sess = tf.Session(config=c_proto)
         self.merged = tf.summary.merge_all()
-        self.train_writer = tf.summary.FileWriter(config.train_sum_dir, self.sess.graph)
+        logdir = ( datetime.now().strftime("%Y%m%d_%H%M%S") \
+        + '_lr_' + str(self.config.learning_rate) \
+        + '_max_epoch_' + str(self.config.max_epoch) \
+        + '_num_points_' + str(self.config.num_points) \
+        + '_num_classes_' + str(self.config.num_classes) \
+        + '_alpha_' + str(self.config.alpha) \
+        + '_gamma_' + str(self.config.gamma))
+        self.logdir = os.path.join(self.config.train_sum_dir, logdir)
+        if not os.path.exists(self.logdir):
+            os.makedirs(self.logdir)
+        import shutil
+        # make a copy of the current config file to the train_log
+        shutil.copy('helper_tool.py', os.path.join(self.logdir, 'helpter_tool.py'))
+        shutil.copy('DetectRandLANet.py', os.path.join(self.logdir, 'DetectRandLANet.py'))
+
+        self.config.visual_log_path = os.path.join(self.config.visual_log_path, logdir)
+        if not os.path.exists(self.config.visual_log_path):
+            os.makedirs(self.config.visual_log_path)
+        self.train_writer = tf.summary.FileWriter(self.logdir, self.sess.graph)
+        
         self.sess.run(tf.global_variables_initializer())
 
     def inference(self, inputs, is_training):
@@ -268,34 +408,34 @@ class Network:
         # bboxes_out = tf.squeeze(bboxes_layer_fc3, [2])
 
 
-        # # fgbg head
-        # fgbg_layer_fc1 = helper_tf_util.conv2d(f_encoder_list[-1], 64, [1, 1], 'fgbg_fc1', [1, 1], 'VALID', True, is_training)
-        # fgbg_layer_fc2 = helper_tf_util.conv2d(fgbg_layer_fc1, 32, [1, 1], 'fgbg_fc2', [1, 1], 'VALID', True, is_training)
-        # fgbg_layer_drop = helper_tf_util.dropout(fgbg_layer_fc2, keep_prob=0.5, is_training=is_training, scope='fgbg_dp1')
-        # fgbg_layer_fc3 = helper_tf_util.conv2d(fgbg_layer_drop, 1, [1, 1], 'fgbg_fc', [1, 1], 'VALID', False,
-        #                                     is_training, activation_fn=None)
-        # fgbg_out = tf.squeeze(fgbg_layer_fc3, [2])
+        # fgbg head
+        fgbg_layer_fc1 = helper_tf_util.conv2d(feature, 256, [1, 1], 'fgbg_fc1', [1, 1], 'VALID', True, is_training)
+        fgbg_layer_fc2 = helper_tf_util.conv2d(fgbg_layer_fc1, 256, [1, 1], 'fgbg_fc2', [1, 1], 'VALID', True, is_training)
+        fgbg_layer_drop = helper_tf_util.dropout(fgbg_layer_fc2, keep_prob=0.5, is_training=is_training, scope='fgbg_dp1')
+        fgbg_layer_fc3 = helper_tf_util.conv2d(fgbg_layer_drop, self.num_fgbg_attributes, [1, 1], 'fgbg_fc', [1, 1], 'VALID', False,
+                                            is_training, activation_fn=None)
+        fgbg_out = tf.squeeze(fgbg_layer_fc3, [2])
 
 
-        # # classification head
+        # classification head
 
-        # cls_layer_fc1 = helper_tf_util.conv2d(f_encoder_list[-1], 64, [1, 1], 'cls_fc1', [1, 1], 'VALID', True, is_training)
-        # cls_layer_fc2 = helper_tf_util.conv2d(cls_layer_fc1, 32, [1, 1], 'cls_fc2', [1, 1], 'VALID', True, is_training)
-        # cls_layer_drop = helper_tf_util.dropout(cls_layer_fc2, keep_prob=0.5, is_training=is_training, scope='cls_dp1')
-        # cls_layer_fc3 = helper_tf_util.conv2d(cls_layer_drop, self.num_classes, [1, 1], 'cls_fc', [1, 1], 'VALID', False,
-        #                                     is_training, activation_fn=None)
-        # cls_out = tf.squeeze(cls_layer_fc3, [2])
-        # return bboxes_out, fgbg_out, cls_out
+        cls_layer_fc1 = helper_tf_util.conv2d(feature, 256, [1, 1], 'cls_fc1', [1, 1], 'VALID', True, is_training)
+        cls_layer_fc2 = helper_tf_util.conv2d(cls_layer_fc1, 256, [1, 1], 'cls_fc2', [1, 1], 'VALID', True, is_training)
+        cls_layer_drop = helper_tf_util.dropout(cls_layer_fc2, keep_prob=0.5, is_training=is_training, scope='cls_dp1')
+        cls_layer_fc3 = helper_tf_util.conv2d(cls_layer_drop, self.num_classes, [1, 1], 'cls_fc', [1, 1], 'VALID', False,
+                                            is_training, activation_fn=None)
+        cls_out = tf.squeeze(cls_layer_fc3, [2])
+        return fgbg_out, cls_out
 
-        f_layer_fc1 = helper_tf_util.conv2d(f_encoder_list[-1], 64, [1, 1], 'fc1', [1, 1], 'VALID', True, is_training)
-        f_layer_fc2 = helper_tf_util.conv2d(f_layer_fc1, 32, [1, 1], 'fc2', [1, 1], 'VALID', True, is_training)
-        f_layer_drop = helper_tf_util.dropout(f_layer_fc2, keep_prob=0.5, is_training=is_training, scope='dp1')
-        # f_layer_fc3 = helper_tf_util.conv2d(f_layer_drop, self.num_output_attributes, [1, 1], 'fc', [1, 1], 'VALID', False,
-        #                                     is_training, activation_fn=None)
-        f_layer_fc3 = helper_tf_util.conv2d(f_layer_drop, self.num_fgbg_attributes, [1, 1], 'fc', [1, 1], 'VALID', False,
-                                    is_training, activation_fn=None)
-        f_out = tf.squeeze(f_layer_fc3, [2])
-        return f_out
+        # f_layer_fc1 = helper_tf_util.conv2d(f_encoder_list[-1], 64, [1, 1], 'fc1', [1, 1], 'VALID', True, is_training)
+        # f_layer_fc2 = helper_tf_util.conv2d(f_layer_fc1, 32, [1, 1], 'fc2', [1, 1], 'VALID', True, is_training)
+        # f_layer_drop = helper_tf_util.dropout(f_layer_fc2, keep_prob=0.5, is_training=is_training, scope='dp1')
+        # # f_layer_fc3 = helper_tf_util.conv2d(f_layer_drop, self.num_output_attributes, [1, 1], 'fc', [1, 1], 'VALID', False,
+        # #                                     is_training, activation_fn=None)
+        # f_layer_fc3 = helper_tf_util.conv2d(f_layer_drop, self.num_fgbg_attributes + self.num_classes, [1, 1], 'fc', [1, 1], 'VALID', False,
+        #                             is_training, activation_fn=None)
+        # f_out = tf.squeeze(f_layer_fc3, [2])
+        # return f_out
 
     def unit_test(self, dataset, cfg):
         # ops = [self.num_active_points, self.cls_loss]
@@ -314,53 +454,6 @@ class Network:
         # print("single inference")
         # print("fgbg shape: ", logits[0].shape)
         # print("fgbg shape: ", logits[0])
-        # print("fgbg shape: ", logits[1])
-        # # for i in range(10):
-        # #     print(logits[0][0][i])
-        # print("fgbg shape: ", logits[1].shape)
-        # print("fgbg shape: ", logits[2].shape)
-        # # for i in range(10):
-        # #     print(logits[1][i])
-        # #     print(logits[2][i])
-        # # # print("mask shape: ", logits[1].shape)
-        # # # # for i in range(logits[1].shape[1]):
-        # # #     # print(logits[1][0][i])
-        # # #     # if logits[1][0][i][0]:
-        # # #     #     print(logits[1][0][i])
-        # # # # print("num fg pts:", logits[2].shape)
-        # # # # print("anchor_bbox: ", logits[2][0])
-        # # print("mask loss focal loss: ", logits[3].shape)
-        # print("mask loss focal loss: ", logits[3])
-        # print("reshaped_input: ", logits[4].shape)
-        # for i in range(logits[4].shape[0]):
-        #     print(logits[4][i], '\t', logits[5][i])
-            # print()
-        # print("reshaped_input: ", logits[4].shape)
-        # print("number of correct predictions: ", np.sum(logits[4]))
-        # print("fgbg acc: ", logits[5])
-
-        # print("reshaped_bboxes: ", logits[5].shape)
-        # print("masked_input: ", logits[6].shape)
-        # # print("masked_input: ", logits[2][0])
-        # print("masked_bboxes: ", logits[7].shape)
-        # # print("logits[7]", logits[7][0])
-        # print("pred_bboxes: ", logits[8].shape)
-        # print("masked_pred_bboxes: ", logits[9].shape)
-        # print("masked_pred_bboxes: ", logits[9][0])
-        # print("bbox_loss: ", logits[10])
-        # print("actual_pred_bboxes: ", logits[11].shape)
-        # print("actual_pred_bboxes: ", logits[11][0])
-        # print("masked_pred_cls: ", logits[12].shape)
-        # print("masked_pred_cls: ", logits[12][0])
-        # print("unweighted_losses: ", logits[13].shape)
-        # print("loss: ", logits[14])
-        # print("pred_cls: ", logits[15].shape)
-        # print("reshaped_cls: ", logits[16].shape)
-        # print("accuracy: ", logits[17])
-        # print(logits[1][0][0])
-        # print(logits[1][1][0])
-        # print(logits[1][2][0])
-        # print(logits[1][3][0])
 
         self.sess.run(dataset.train_init_op)
         while self.training_epoch < self.config.max_epoch:
@@ -370,27 +463,58 @@ class Network:
                         self.extra_update_ops,
                         self.merged,
                         self.loss,
-                        self.logits,
-                        self.alpha,
-                        self.prob_logits, self.gt_fgbg,
+                        # self.logits,
+                        # self.pred_fgbg,
+                        self.prob_fgbg,
+                        self.prob_cls,
                         self.interested_pc,
-                        self.pred_fgbg_label,
-                        self.fgbg_accuracy]
-                _, _, summary, l_out, probs, alpha, prob_logits, gt_fgbg, interested_pc,\
-                        pred_fgbg_label, fgbg_accuracy = self.sess.run(ops, {self.is_training: True})
+                        self.fgbg_ratio,
+                        self.non_zero_cls_ratio,
+                        # self.gt_fgbg,
+                        # self.pred_fgbg_label,
+                        self.fgbg_accuracy,
+                        self.classification_accuracy,
+                        self.masked_pred_cls,
+                        self.masked_target_cls
+                        ]
+                _, _, summary, l_out, prob_fgbg, prob_cls  ,interested_pc, fgbg_ratio, non_zero_cls_ratio,\
+                        fgbg_accuracy, cls_acc, pred_cls, target_cls = self.sess.run(ops, {self.is_training: True})
                 self.train_writer.add_summary(summary, self.training_step)
+                
+                # # Calculate the confusion matrix.
+                # cm = sklearn.metrics.confusion_matrix(target_cls, np.argmax(pred_cls,axis=-1))
+                # # Log the confusion matrix as an image summary.
+                # figure = plot_confusion_matrix(cm, class_names=['Car', 'Pedestrian', 'Cyclist', 'Van'])
+                # cm_image = plot_to_image(figure)
+                # tf_cm_summary = tf.summary.image("Confusion Matrix", cm_image, family="confusion_matrix")
+                # tf_cm_image = self.sess.run(tf_cm_summary)
+                # self.train_writer.add_summary(tf_cm_image, self.training_step)
+
                 t_end = time.time()
                 if self.training_step % 50 == 0:
                     # for i in range(10):
                     #     print(prob_logits[i])
                     #     print(gt_fgbg[i])
-                    message = 'Step {:08d} L_out={:5.3f} Acc={:4.2f} FgbgAcc={:4.2f} FgbgPer={:4.2f} ''---{:8.2f} ms/batch'
-                    log_out(message.format(self.training_step, l_out, 0, fgbg_accuracy, alpha, 1000 * (t_end - t_start)), self.Log_file)
-                    if self.training_epoch > 95:
+                    message = 'Step {:08d} L_out={:5.3f} Acc={:4.5f} FgbgAcc={:4.5f} FgbgPer={:4.5f} NonZeroClsPer={:4.5f} ''---{:8.2f} ms/batch {}' 
+                    log_out(message.format(self.training_step, l_out, cls_acc, fgbg_accuracy, fgbg_ratio, non_zero_cls_ratio, 1000 * (t_end - t_start), str(set(target_cls))), self.Log_file)
+                    
+                    if (self.training_step % 200 == 0) and (self.training_epoch % 5 == 0):
                         interested_pc_output_path = os.path.join(self.config.visual_log_path, 'interested_pc_' + str(self.training_step) + '.bin')
                         pred_fgbg_label_output_path = os.path.join(self.config.visual_log_path, 'pred_fgbg_label_' + str(self.training_step) + '.bin')
+                        pred_class_label_output_path = os.path.join(self.config.visual_log_path, 'pred_class_label_' + str(self.training_step) + '.bin')
                         interested_pc.astype('float32').tofile(interested_pc_output_path)
-                        pred_fgbg_label.astype('float32').tofile(pred_fgbg_label_output_path)
+                        prob_fgbg.astype('float32').tofile(pred_fgbg_label_output_path)
+                        prob_cls.astype('float32').tofile(pred_class_label_output_path)
+                        
+                        # Calculate the confusion matrix.
+                        cm = sklearn.metrics.confusion_matrix(target_cls, np.argmax(pred_cls,axis=-1))
+                        # Log the confusion matrix as an image summary.
+                        figure = plot_confusion_matrix(cm, class_names=['Car', 'Pedestrian', 'Cyclist', 'Van'])
+                        cm_image = plot_to_image(figure)
+                        tf_cm_summary = tf.summary.image("Confusion Matrix", cm_image, family="confusion_matrix_" + str(self.config.alpha))
+                        tf_cm_image = self.sess.run(tf_cm_summary)
+                        self.train_writer.add_summary(tf_cm_image, self.training_step)
+
                 self.training_step += 1
             except tf.errors.OutOfRangeError:
                 self.training_epoch += 1
@@ -583,6 +707,7 @@ class Network:
         interpolated_features = tf.expand_dims(interpolated_features, axis=2)
         return interpolated_features
 
+    # tensorflow v1 style
     @staticmethod
     def gather_neighbour(pc, neighbor_idx):
         # gather the coordinates or features of neighboring points
@@ -594,12 +719,17 @@ class Network:
         features = tf.reshape(features, [batch_size, num_points, tf.shape(neighbor_idx)[-1], d])
         return features
 
+    # @tf.function
+    # def gather_neighbour(pc, neighbor_idx):
+    #         # gather the coordinates or features of neighboring points
+    #         return helper_tf_util.batch_gather(pc, neighbor_idx, axis=1)
+
     @staticmethod
     def att_pooling(feature_set, d_out, name, is_training):
         batch_size = tf.shape(feature_set)[0]
         num_points = tf.shape(feature_set)[1]
         num_neigh = tf.shape(feature_set)[2]
-        d = feature_set.get_shape()[3].value
+        d = feature_set.get_shape()[3]
         f_reshaped = tf.reshape(feature_set, shape=[-1, num_neigh, d])
         att_activation = tf.layers.dense(f_reshaped, d, activation=None, use_bias=False, name=name + 'fc')
         att_scores = tf.nn.softmax(att_activation, axis=1)

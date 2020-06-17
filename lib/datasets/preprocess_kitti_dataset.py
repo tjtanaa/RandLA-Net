@@ -21,6 +21,8 @@ from helper_tool import DataProcessing as DP
 import lib.utils.calibration as calibration
 import lib.utils.kitti_utils as kitti_utils
 
+from collections import Counter
+
 CAM = 2
 
 def load_velodyne_points(filename):
@@ -203,12 +205,16 @@ if __name__ == '__main__':
             print('One Hot Length: ', number_of_labels)
             number_of_labels = 0
 
+    # container to count the number of object of class i per scene in the training dataset
+    # the weight will be normalized to [0,1] and used as the weight for the class in 
+    # the classification loss
+    class_count = Counter()
     total_objs = []
     l_list = []
     w_list = []
     h_list = []
     ry_list = [] # 7481 int(7481*0.1)
-    num_pts = []
+    num_pts = [] # len(num_points) equivalent to total number of valid scenes
     skip_count = 0
     for frame in range( int(7481*interested_sample_ratio)):
 
@@ -244,6 +250,8 @@ if __name__ == '__main__':
         bboxes3d_rotated_corners = kitti_utils.boxes3d_to_corners3d(bboxes3d)
         box3d_roi_inds_overall = None
         valid_labels = []
+        # set to collect the type of classes
+        class_set = set()
         for i, bbox3d_corners in enumerate(bboxes3d_rotated_corners):
             # print("bboxes3d_rotated_corners: ", bboxes3d_rotated_corners[i])
             box3d_roi_inds = kitti_utils.in_hull(points[:,:3], bbox3d_corners)
@@ -261,12 +269,15 @@ if __name__ == '__main__':
             if number_of_labels > 1:
                 # target_array[box3d_roi_inds, 7 + labels[i].cls_id] = 1
                 target_array[box3d_roi_inds, 8] = labels[i].cls_id 
-
+                class_set.update([labels[i].cls_id])
 
             if box3d_roi_inds_overall is None:
                 box3d_roi_inds_overall = box3d_roi_inds
             else:
                 box3d_roi_inds_overall = np.logical_or(box3d_roi_inds_overall,box3d_roi_inds)
+
+        for class_id in class_set:
+            class_count[class_id] += 1
 
         if box3d_roi_inds_overall is None:
             skip_count += 1
@@ -297,6 +308,19 @@ if __name__ == '__main__':
         target_array.astype('float32').tofile(output_label_name)
         # with open(output_label_name, 'wb') as f:
         #     pickle.dump(valid_labels, f)
+
+    dataset_stats_log_dir = 'lib/datasets/dataset_stats'
+
+    if not os.path.exists(dataset_stats_log_dir):
+        os.makedirs(dataset_stats_log_dir)
+
+    with open(os.path.join(dataset_stats_log_dir, 'dataset_stats.txt'), 'w') as f:
+        for k, v in class_count.items():
+            total_count = v
+            percentage = v / len(num_pts)
+            output_msg = 'Class: ' + str(k) + '\t Count: ' \
+                    + str(total_count) + '\t Percentage: ' + str(percentage) +'\n'
+            f.write(output_msg)
 
     # stats_list = [total_objs, l_list, w_list, h_list, ry_list , num_pts]
     # headers = ['N', 'L', "W", "H", "RY", "NPts"]

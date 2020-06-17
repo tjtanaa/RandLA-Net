@@ -56,6 +56,7 @@ class KittiLoader(object):
 
         self.train_list = DP.shuffle_list(self.train_list)
         self.val_list = DP.shuffle_list(self.val_list)
+        self.num_points_left = int(cfg.num_points * np.prod(cfg.sub_sampling_ratio))
 
 
     def resampling_pc_indices(self, pc):
@@ -74,44 +75,50 @@ class KittiLoader(object):
 
 
     def get_sample(self, idx):
-        
-        with open(os.path.join(self.pc_path, self.frames[idx] + '.bin'), 'rb') as f:
-            pc = np.fromfile(f, dtype=np.float32)
-            pc = pc.reshape(pc.shape[0]//4, 4)
-        
-        # with open(os.path.join(self.label_path, self.frames[idx] + '.pkl'), 'rb') as f:
-        #     label = pickle.load(f)
-
-        with open(os.path.join(self.label_path, self.frames[idx] + '.bin'), 'rb') as f:
+        _idx = idx
+        while(True):
+            with open(os.path.join(self.pc_path, self.frames[_idx] + '.bin'), 'rb') as f:
+                pc = np.fromfile(f, dtype=np.float32)
+                pc = pc.reshape(pc.shape[0]//4, 4)
             
-            target = np.fromfile(f, dtype=np.float32)
-            target = target.reshape(target.shape[0]//(self.num_target_attributes)
-                            , self.num_target_attributes)
-        
+            # with open(os.path.join(self.label_path, self.frames[idx] + '.pkl'), 'rb') as f:
+            #     label = pickle.load(f)
 
-        # start to precompute the randlanet input
+            with open(os.path.join(self.label_path, self.frames[_idx] + '.bin'), 'rb') as f:
+                
+                target = np.fromfile(f, dtype=np.float32)
+                target = target.reshape(target.shape[0]//(self.num_target_attributes)
+                                , self.num_target_attributes)
+            
 
-        # Random resampling the points to NUM_POINTS self.num_pts
-        indices = self.resampling_pc_indices(pc)
+            # start to precompute the randlanet input
 
-        resampled_pc = pc[indices,:3]
-        resampled_features = pc[indices,:4]
-        resampled_bboxes = target[indices, :self.num_target_attributes - 2] # [x,y,z,h,w,l,ry]
-        resampled_fgbg = target[indices, self.num_target_attributes-2] #.reshape(-1,1) # [fgbg]
-        resampled_cls = target[indices, self.num_target_attributes-1] - 1.0 #.reshape(-1,1) # [cls]
-        # resampled_cls_one_hot = None
-        # if self.num_classes > 1:
-        #     # print("num class > 1")
-        #     resampled_cls_one_hot = target[indices, self.num_target_attributes:self.num_target_attributes + self.num_classes]
-        
-        # print(resampled_pc.shape)
-        # print(resampled_features.shape)
-        # print(resampled_target.shape)
-        # print(resampled_fgbg.shape)
-        # print(resampled_cls_one_hot.shape)
+            # Random resampling the points to NUM_POINTS self.num_pts
+            indices = self.resampling_pc_indices(pc)
 
-        # return resampled_pc, resampled_features, resampled_target, resampled_fgbg, resampled_cls_one_hot
-        return resampled_pc, resampled_features, resampled_bboxes, resampled_fgbg, resampled_cls
+            resampled_pc = pc[indices,:3]
+            resampled_features = pc[indices,:4]
+            resampled_bboxes = target[indices, :self.num_target_attributes - 2] # [x,y,z,h,w,l,ry]
+            resampled_fgbg = target[indices, self.num_target_attributes-2] #.reshape(-1,1) # [fgbg]
+            resampled_cls = target[indices, self.num_target_attributes-1] - 1.0 #.reshape(-1,1) # [cls]
+            # resampled_cls_one_hot = None
+            # if self.num_classes > 1:
+            #     # print("num class > 1")
+            #     resampled_cls_one_hot = target[indices, self.num_target_attributes:self.num_target_attributes + self.num_classes]
+            
+            # print(resampled_pc.shape)
+            # print(resampled_features.shape)
+            # print(resampled_target.shape)
+            # print(resampled_fgbg.shape)
+            # print(resampled_cls_one_hot.shape)
+            if np.sum(resampled_fgbg[:self.num_points_left]) > 0:
+            # return resampled_pc, resampled_features, resampled_target, resampled_fgbg, resampled_cls_one_hot
+                return resampled_pc, resampled_features, resampled_bboxes, resampled_fgbg, resampled_cls
+            else:
+                if _idx -1 < 0:
+                    _idx = _idx + 1
+                else:
+                    _idx = _idx - 1
         
 
     def get_batch_gen(self, split):
