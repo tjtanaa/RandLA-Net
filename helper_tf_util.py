@@ -115,7 +115,23 @@ def focal_loss(prediction_tensor, target_tensor, weights=None, alpha=0.25, gamma
                           - (1 - alpha) * (neg_p_sub ** gamma) * tf.log(tf.clip_by_value(1.0 - sigmoid_p, 1e-8, 1.0))
     return tf.reduce_mean(per_entry_cross_ent)
 
-
+def focal_loss_sigmoid(labels,logits,alpha=0.25,gamma=2):
+    """
+    Computer focal loss for binary classification
+    Args:
+      labels: A int32 tensor of shape [batch_size].
+      logits: A float32 tensor of shape [batch_size].
+      alpha: A scalar for focal loss alpha hyper-parameter. If positive samples number
+      > negtive samples number, alpha < 0.5 and vice versa.
+      gamma: A scalar for focal loss gamma hyper-parameter.
+    Returns:
+      A tensor of the same shape as `labels`
+    """
+    y_pred=tf.nn.sigmoid(logits)
+    labels=tf.to_float(labels)
+    L=-labels*(1-alpha)*((1-y_pred)*gamma)*tf.log(y_pred)-\
+      (1-labels)*alpha*(y_pred**gamma)*tf.log(1-y_pred)
+    return L
 
 
 
@@ -280,6 +296,63 @@ def conv2d(inputs,
             outputs = tf.nn.leaky_relu(outputs, alpha=0.2)
         return outputs
 
+def biased_conv2d(inputs,
+           num_output_channels,
+           kernel_size,
+           scope,
+           stride=[1, 1],
+           padding='SAME',
+           bn=False,
+           is_training=None,
+           use_xavier=False,
+           stddev=1e-3,
+           weight_decay=0.0,
+           bias=-1.0,
+           activation_fn=tf.nn.relu,
+           bn_decay=None):
+    """ 2D convolution with non-linear operation.
+
+    Args:
+      inputs: 4-D tensor variable BxHxWxC
+      num_output_channels: int
+      kernel_size: a list of 2 ints
+      scope: string
+      stride: a list of 2 ints
+      padding: 'SAME' or 'VALID'
+      use_xavier: bool, use xavier_initializer if true
+      stddev: float, stddev for truncated_normal init
+      weight_decay: float
+      activation_fn: function
+      bn: bool, whether to use batch norm
+      bn_decay: float or float tensor variable in [0,1]
+      is_training: bool Tensor variable
+
+    Returns:
+      Variable tensor
+    """
+    with tf.variable_scope(scope) as sc:
+        kernel_h, kernel_w = kernel_size
+        num_in_channels = inputs.get_shape()[-1].value
+        kernel_shape = [kernel_h, kernel_w,
+                        num_in_channels, num_output_channels]
+        kernel = _variable_with_weight_decay('weights',
+                                             shape=kernel_shape,
+                                             use_xavier=use_xavier,
+                                             stddev=stddev,
+                                             wd=weight_decay)
+        stride_h, stride_w = stride
+        outputs = tf.nn.conv2d(inputs, kernel,
+                               [1, stride_h, stride_w, 1],
+                               padding=padding)
+        biases = _variable_on_cpu('biases', [num_output_channels],
+                                  tf.constant_initializer(bias))
+        outputs = tf.nn.bias_add(outputs, biases)
+
+        if bn:
+            outputs = tf.layers.batch_normalization(outputs, momentum=0.99, epsilon=1e-6, training=is_training)
+        if activation_fn is not None:
+            outputs = tf.nn.leaky_relu(outputs, alpha=0.2)
+        return outputs
 
 def conv2d_transpose(inputs,
                      num_output_channels,

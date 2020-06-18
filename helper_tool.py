@@ -155,11 +155,12 @@ class ConfigKitti:
     num_output_attributes = 7 + 2 + num_classes
 
     batch_size = 1  # 5 batch_size during training
-    val_batch_size = 16  # batch_size during validation and test
+    val_batch_size = 1  # batch_size during validation and test
     train_steps = 500  # Number of steps per epochs
     val_steps = 100  # Number of validation steps per epoch
 
-    split_ratio = [0.7, 0.2, 0.1] # [Train, Val, Test] Train + Val + Test = 1
+    # split_ratio = [0.7, 0.2, 0.1] # [Train, Val, Test] Train + Val + Test = 1
+    split_ratio = [0.1, 0.1, 0.8] # [Train, Val, Test] Train + Val + Test = 1
     class_of_interest: [1,2,3,4]
     difficulty : [1,2,3]
 
@@ -170,7 +171,7 @@ class ConfigKitti:
     
     noise_init = 3.5  # noise initial parameter
     max_epoch = 300  # maximum epoch during training
-    learning_rate = 1e-1  # initial learning rate
+    learning_rate = 1e-2  # initial learning rate
     lr_decays = {i: 0.95 for i in range(0, 500)}  # decay rate of learning rate
 
     train_data_path = "/media/data3/tjtanaa/kitti_dataset/tutorial/training"
@@ -182,7 +183,7 @@ class ConfigKitti:
     anchor_size = [[1.5343, 1.62815, 3.87087]]
 
     # this is the parameter for focal loss
-    alpha = 0.25
+    alpha = 0.75
     gamma = 2
     
 
