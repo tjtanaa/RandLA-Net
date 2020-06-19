@@ -12,3 +12,4 @@ log_train_Semantic3D1.txt
 /lib/datasets/exploration_stats/
 /lib/datasets/__pycache__/
 log_train_KITTI.txt
+/parent_a78c65b_commit_d09c0b62b35e0cc762655965b7677e2a7b2a5332/
