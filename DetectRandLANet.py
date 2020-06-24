@@ -520,6 +520,7 @@ class Network:
         # print("interested_pc shape: ", logits[1].shape)
         # print("color shape: ", logits[2].shape)
         # print("color shape: ", logits[2])
+        
 
         self.sess.run(dataset.train_init_op)
         while self.training_epoch < self.config.max_epoch:
