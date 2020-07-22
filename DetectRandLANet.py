@@ -254,20 +254,33 @@ class Network:
             self.pred_fgbg_label = tf.equal(tf.cast(tf.argmax(tf.nn.sigmoid(self.pred_fgbg),axis=-1)
                                     ,dtype=tf.int32), tf.cast(self.inputs['fgbg'],dtype=tf.int32))          
  
-            # compute the loss for classification
-            self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=[-1])
-            self.pred_cls = tf.reshape(self.cls_logits, shape=[-1, self.num_classes])
+            # compute the loss for multiclassification
+            # self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=[-1])
+            # self.pred_cls = tf.reshape(self.cls_logits, shape=[-1, self.num_classes])
+            # self.reshaped_target_cls = tf.reshape(self.inputs['class_label'], shape=[-1])
+            # self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
+            # self.masked_target_cls = tf.boolean_mask(self.reshaped_target_cls, self.mask)
+            # self.masked_one_hot_cls = tf.one_hot(self.masked_target_cls, depth=self.num_classes)
+            # self.unweighted_losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.masked_pred_cls, labels=self.masked_one_hot_cls)
+            # self.cls_loss = tf.cond(self.num_fg_points > 0, lambda: tf.reduce_mean(self.unweighted_losses), 
+            #     lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
+
+            # compute loss for binary classification
+            # self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=[-1])
+            self.pred_cls = tf.reshape(tf.nn.sigmoid(self.cls_logits), shape=[-1])
             self.reshaped_target_cls = tf.reshape(self.inputs['class_label'], shape=[-1])
-            self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
-            self.masked_target_cls = tf.boolean_mask(self.reshaped_target_cls, self.mask)
-            self.masked_one_hot_cls = tf.one_hot(self.masked_target_cls, depth=self.num_classes)
-            self.unweighted_losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.masked_pred_cls, labels=self.masked_one_hot_cls)
-            self.cls_loss = tf.cond(self.num_fg_points > 0, lambda: tf.reduce_mean(self.unweighted_losses), 
-                lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
+            # self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
+            # self.masked_target_cls = tf.boolean_mask(self.reshaped_target_cls, self.mask)
+            # self.masked_one_hot_cls = tf.one_hot(self.masked_target_cls, depth=self.num_classes)
+            # self.unweighted_losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.masked_pred_cls, labels=self.masked_one_hot_cls)
+            # self.cls_loss = tf.cond(self.num_fg_points > 0, lambda: tf.reduce_mean(self.unweighted_losses), 
+                # lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
+            self.cls_loss = tf.reduce_mean(self.pred_cls - tf.cast(self.reshaped_target_cls, dtype=tf.float32))
 
 
             # compute percentage of points which are not class 0
-            self.num_non_zero_cls = tf.math.reduce_sum(tf.cast(tf.greater(self.masked_target_cls, 0), dtype=tf.float32))
+            # self.num_non_zero_cls = tf.math.reduce_sum(tf.cast(tf.greater(self.masked_target_cls, 0), dtype=tf.float32))
+            self.num_non_zero_cls = tf.math.reduce_sum(tf.cast(tf.greater(self.reshaped_target_cls, 0), dtype=tf.float32))
             self.non_zero_cls_ratio = tf.divide(self.num_non_zero_cls, 
                     tf.cast(
                         tf.shape(self.inputs['class_label'])[0]* tf.shape(self.inputs['class_label'])[1]
@@ -317,11 +330,32 @@ class Network:
             # self.pred_cls_label = tf.cast(tf.argmax(tf.nn.softmax(self.masked_pred_cls),-1), dtype=tf.int32)
             # self.accuracy = tf.reduce_mean(tf.cast(tf.equal(self.pred_cls_label, self.valid_gt_label),dtype=tf.float32))
 
-            self.classification_accuracy = tf.cond(self.num_fg_points > 0, 
-            lambda:  tf.reduce_mean(tf.cast(
-                tf.nn.in_top_k(self.masked_pred_cls, self.masked_target_cls, 1)
-                , tf.float32)), lambda: tf.convert_to_tensor(-1.0))
+            # self.classification_accuracy = tf.cond(self.num_fg_points > 0, 
+            # lambda:  tf.reduce_mean(tf.cast(
+            #     tf.nn.in_top_k(self.masked_pred_cls, self.masked_target_cls, 1)
+            #     , tf.float32)), lambda: tf.convert_to_tensor(-1.0))
 
+            # # self.accuracy = tf.cond(self.num_active_points > 0, 
+            # # lambda:  tf.reduce_mean(tf.cast(
+            # #     tf.nn.in_top_k(self.masked_pred_cls, self.valid_gt_label, 1)
+            # #     , tf.float32)), lambda: tf.convert_to_tensor(-1.0))
+
+            # self.pred_fgbg = tf.reshape(self.pred_fgbg , shape=(-1, self.num_fgbg_attributes))
+            # self.gt_fgbg = tf.cast(self.inputs['fgbg'],dtype=tf.int32)
+            # self.gt_fgbg = tf.reshape(self.gt_fgbg, [-1])
+            # # self.gt_fgbg = tf.squeeze(self.gt_fgbg,-1)
+            # self.fgbg_correct_prediction = tf.nn.in_top_k(self.pred_fgbg, self.gt_fgbg, 1)
+            # self.fgbg_accuracy = tf.reduce_mean(tf.cast(self.fgbg_correct_prediction, tf.float32))
+            # # self.prob_logits = tf.nn.softmax(self.pred_cls)
+            # self.prob_fgbg = tf.nn.sigmoid(self.pred_fgbg)
+            # self.prob_cls = tf.nn.softmax(self.masked_pred_cls)
+            
+            # self.classification_accuracy = tf.cond(self.num_fg_points > 0, 
+            # lambda:  tf.reduce_mean(tf.cast(
+            #     tf.nn.in_top_k(self.masked_pred_cls, self.masked_target_cls, 1)
+            #     , tf.float32)), lambda: tf.convert_to_tensor(-1.0))
+
+            self.classification_accuracy = tf.reduce_mean(tf.cast(self.pred_cls > 0.5, dtype=tf.int32) - self.reshaped_target_cls)
             # self.accuracy = tf.cond(self.num_active_points > 0, 
             # lambda:  tf.reduce_mean(tf.cast(
             #     tf.nn.in_top_k(self.masked_pred_cls, self.valid_gt_label, 1)
@@ -335,7 +369,8 @@ class Network:
             self.fgbg_accuracy = tf.reduce_mean(tf.cast(self.fgbg_correct_prediction, tf.float32))
             # self.prob_logits = tf.nn.softmax(self.pred_cls)
             self.prob_fgbg = tf.nn.sigmoid(self.pred_fgbg)
-            self.prob_cls = tf.nn.softmax(self.masked_pred_cls)
+            # self.prob_cls = tf.nn.softmax(self.masked_pred_cls)
+            self.prob_cls = self.pred_cls
             
 
             # material_config = {
@@ -541,8 +576,10 @@ class Network:
                         # self.pred_fgbg_label,
                         self.fgbg_accuracy,
                         self.classification_accuracy,
-                        self.masked_pred_cls,
-                        self.masked_target_cls
+                        # self.masked_pred_cls,
+                        # self.masked_target_cls,
+                        self.pred_cls,
+                        self.reshaped_target_cls
                         ]
                 _, _, train_summary, l_out, prob_fgbg, prob_cls  ,interested_pc, fgbg_ratio, non_zero_cls_ratio,\
                         fgbg_accuracy, cls_acc, pred_cls, target_cls = self.sess.run(ops, {self.is_training: True})
@@ -574,9 +611,11 @@ class Network:
                         prob_cls.astype('float32').tofile(pred_class_label_output_path)
                         
                         # Calculate the confusion matrix.
-                        cm = sklearn.metrics.confusion_matrix(target_cls, np.argmax(pred_cls,axis=-1))
+                        # cm = sklearn.metrics.confusion_matrix(target_cls, np.argmax(pred_cls,axis=-1))
+                        cm = sklearn.metrics.confusion_matrix(target_cls, (pred_cls > 0.5),labels=["not car", "car"])
                         # Log the confusion matrix as an image summary.
-                        figure = plot_confusion_matrix(cm, class_names=['Car', 'Pedestrian', 'Cyclist', 'Van'])
+                        # figure = plot_confusion_matrix(cm, class_names=['Car', 'Pedestrian', 'Cyclist', 'Van'])
+                        figure = plot_confusion_matrix(cm, class_names=["not car", "car"])
                         cm_image = plot_to_image(figure)
                         tf_cm_summary = tf.summary.image("Confusion Matrix", cm_image, family="confusion_matrix_" + str(self.config.alpha))
                         tf_cm_image = self.sess.run(tf_cm_summary)

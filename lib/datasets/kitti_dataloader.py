@@ -16,6 +16,8 @@ from helper_tool import ConfigKitti as cfg
 import lib.utils.calibration as calibration
 import lib.utils.kitti_utils as kitti_utils
 import tensorflow as tf
+from lib.datasets.augmentation import rotate, scale, transform, flip
+from numpy.linalg import multi_dot
 
 
 
@@ -41,6 +43,13 @@ class KittiLoader(object):
         self.num_features = cfg.num_features
         self.num_target_attributes = cfg.num_target_attributes
         self.split_ratio = cfg.split_ratio
+        self.augmentation = cfg.augmentation
+        
+        self.rotate_range=np.pi/4
+        self.rotate_mode='u'
+        self.scale_range=0.5
+        self.scale_mode='u'
+        self.flip_flag=True
         self.num_samples = len(self.frames)
         assert np.abs(np.sum(self.split_ratio) - 1.0) < 1e-5
         train_split = int(self.num_samples * self.split_ratio[0])
@@ -100,7 +109,7 @@ class KittiLoader(object):
             resampled_features = pc[indices,:4]
             resampled_bboxes = target[indices, :self.num_target_attributes - 2] # [x,y,z,h,w,l,ry]
             resampled_fgbg = target[indices, self.num_target_attributes-2] #.reshape(-1,1) # [fgbg]
-            resampled_cls = target[indices, self.num_target_attributes-1] - 1.0 #.reshape(-1,1) # [cls]
+            resampled_cls = ((np.logical_or(target[indices, self.num_target_attributes-1] == 1, target[indices, self.num_target_attributes-1] == 4))).astype(np.float32) #.reshape(-1,1) # [cls]
             # resampled_cls_one_hot = None
             # if self.num_classes > 1:
             #     # print("num class > 1")
@@ -113,6 +122,18 @@ class KittiLoader(object):
             # print(resampled_cls_one_hot.shape)
             if np.sum(resampled_fgbg[:self.num_points_left]) > 0:
             # return resampled_pc, resampled_features, resampled_target, resampled_fgbg, resampled_cls_one_hot
+                if self.augmentation:
+                    T_rotate, angle = rotate(self.rotate_range, self.rotate_mode)
+                    T_scale, scale_xyz = scale(self.scale_range, self.scale_mode)
+                    T_flip, flip_y = flip(flip=self.flip_flag)
+                    T_coors = multi_dot([T_scale, T_flip, T_rotate])
+                    resampled_pc = transform(resampled_pc, T_coors)
+                    resampled_bboxes_xyz = resampled_bboxes[:,:3]
+                    resampled_bboxes_attributes = resampled_bboxes[:,3:]
+                    resampled_bboxes_xyz = transform(resampled_bboxes_xyz, T_coors)
+                    resampled_bboxes = np.concatenate([resampled_bboxes_xyz,resampled_bboxes_attributes],axis=1)
+                    # print("resampled_bboxes.shape: ", resampled_bboxes.shape)
+
                 return resampled_pc, resampled_features, resampled_bboxes, resampled_fgbg, resampled_cls
             else:
                 if _idx -1 < 0:

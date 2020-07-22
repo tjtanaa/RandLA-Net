@@ -149,7 +149,7 @@ class ConfigKitti:
     k_n = 16  # KNN
     num_layers = 5  # Number of layers
     num_points = 20000  # 65536 Number of input points
-    num_classes = 4  # Number of valid classes
+    num_classes = 1  # Number of valid classes 1 means binary classification
     num_features = 4
     num_target_attributes = 9 # [x, y, z, h, w, l, ry, fgbg, cls]
     num_output_attributes = 7 + 2 + num_classes
@@ -160,8 +160,8 @@ class ConfigKitti:
     val_steps = 100  # Number of validation steps per epoch
 
     split_ratio = [0.7, 0.2, 0.1] # [Train, Val, Test] Train + Val + Test = 1
-    class_of_interest: [1,2,3,4]
-    difficulty : [1,2,3]
+    class_of_interest: [1,4]
+    difficulty : [2]
 
     sub_sampling_ratio = [0.7, 0.7, 0.7, 0.7, 0.7]  # sampling ratio of random sampling at each layer
     d_out = [32, 64, 128, 256, 512]  # feature dimension
@@ -178,7 +178,8 @@ class ConfigKitti:
     saving = True
     saving_path = None
     visual_log_path = "/media/data3/tjtanaa/kitti_dataset/tutorial/training/visual_log"
-
+    
+    augmentation=True
     anchor_size = [[1.5343, 1.62815, 3.87087]]
 
     # this is the parameter for focal loss

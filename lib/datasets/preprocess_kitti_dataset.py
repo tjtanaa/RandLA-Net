@@ -259,17 +259,17 @@ if __name__ == '__main__':
             # print("xmin: ", np.min(points[:,0]), " xmax: ", np.max(points[:,0]))
             # print("ymin: ", np.min(points[:,1]), " ymax: ", np.max(points[:,1]))
             # print("zmin: ", np.min(points[:,2]), " zmax: ", np.max(points[:,2]))
-            if  np.sum(box3d_roi_inds) < 10: # if there are too little valid points
+            if  np.sum(box3d_roi_inds) < 1: # if there are too little valid points
                 continue
             valid_labels.append(labels[i])
             # print(type(box3d_roi_inds))
 
             target_array[box3d_roi_inds, :7] = bboxes3d[i]
             target_array[box3d_roi_inds, 7] = 1
-            if number_of_labels > 1:
+            # if number_of_labels > 1:
                 # target_array[box3d_roi_inds, 7 + labels[i].cls_id] = 1
-                target_array[box3d_roi_inds, 8] = labels[i].cls_id 
-                class_set.update([labels[i].cls_id])
+            target_array[box3d_roi_inds, 8] = labels[i].cls_id 
+            class_set.update([labels[i].cls_id])
 
             if box3d_roi_inds_overall is None:
                 box3d_roi_inds_overall = box3d_roi_inds
