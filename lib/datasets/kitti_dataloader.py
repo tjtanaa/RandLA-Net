@@ -47,10 +47,11 @@ class KittiLoader(object):
         
         self.rotate_range=np.pi/4
         self.rotate_mode='u'
-        self.scale_range=0.5
+        self.scale_range=0.05
         self.scale_mode='u'
         self.flip_flag=True
         self.num_samples = len(self.frames)
+        # self.num_samples = 500
         assert np.abs(np.sum(self.split_ratio) - 1.0) < 1e-5
         train_split = int(self.num_samples * self.split_ratio[0])
         val_split = int(self.num_samples * np.sum(self.split_ratio[:2]))
@@ -121,6 +122,7 @@ class KittiLoader(object):
             # print(resampled_fgbg.shape)
             # print(resampled_cls_one_hot.shape)
             if np.sum(resampled_fgbg[:self.num_points_left]) > 0:
+            # if np.sum(resampled_cls[:self.num_points_left]) > 0:
             # return resampled_pc, resampled_features, resampled_target, resampled_fgbg, resampled_cls_one_hot
                 if self.augmentation:
                     T_rotate, angle = rotate(self.rotate_range, self.rotate_mode)
@@ -133,8 +135,8 @@ class KittiLoader(object):
                     resampled_bboxes_xyz = transform(resampled_bboxes_xyz, T_coors)
                     resampled_bboxes = np.concatenate([resampled_bboxes_xyz,resampled_bboxes_attributes],axis=1)
                     # print("resampled_bboxes.shape: ", resampled_bboxes.shape)
-
-                return resampled_pc, resampled_features, resampled_bboxes, resampled_fgbg, resampled_cls
+                # resampled_bboxes = None
+                return resampled_pc, resampled_features, resampled_bboxes[:self.num_points_left], resampled_fgbg[:self.num_points_left], resampled_cls[:self.num_points_left]
             else:
                 if _idx -1 < 0:
                     _idx = _idx + 1

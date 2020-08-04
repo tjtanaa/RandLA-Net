@@ -163,7 +163,7 @@ class ConfigKitti:
     class_of_interest: [1,4]
     difficulty : [2]
 
-    sub_sampling_ratio = [0.7, 0.7, 0.7, 0.7, 0.7]  # sampling ratio of random sampling at each layer
+    sub_sampling_ratio = [0.7, 0.7, 0.7 , 0.7, 0.7]  # sampling ratio of random sampling at each layer
     d_out = [32, 64, 128, 256, 512]  # feature dimension
     # sub_sampling_ratio = [4,4,2]
     # d_out = [128, 256, 512]  

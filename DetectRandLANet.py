@@ -45,9 +45,16 @@ def plot_confusion_matrix(cm, class_names=None):
         cm (array, shape = [n, n]): a confusion matrix of integer classes
         class_names (array, shape = [n]): String names of the integer classes
     """
+    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    from matplotlib.figure import Figure
+
+    fig = Figure()
+
     if class_names is None:
         class_names = [i for i in range(len(cm))]
     figure = plt.figure(figsize=(8, 8))
+    canvas = FigureCanvas(fig)
+
     plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
     plt.title("Confusion matrix")
     plt.colorbar()
@@ -56,7 +63,7 @@ def plot_confusion_matrix(cm, class_names=None):
     plt.yticks(tick_marks, class_names)
 
     # Normalize the confusion matrix.
-    cm = np.around(cm.astype('float') / cm.sum(axis=1)[:, np.newaxis], decimals=2)
+    # cm = np.around(cm.astype('float') / cm.sum(axis=1)[:, np.newaxis], decimals=2)
 
     # Use white text if squares are dark; otherwise black.
     threshold = cm.max() / 2.
@@ -67,7 +74,19 @@ def plot_confusion_matrix(cm, class_names=None):
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
-    return figure
+
+    canvas.draw()       # draw the canvas, cache the renderer
+
+    s, (width, height) = canvas.print_to_buffer()
+
+    # Option 2a: Convert to a NumPy array.
+    image = np.fromstring(s, np.uint8).reshape((height, width, 4))  #.astype('float32')
+    # image = np.fromstring(canvas.tostring_rgb(), dtype='uint8')
+    # image[:,:,0] *= (1/255.0)
+    # image[:,:,1] *= (1/255.0)
+    # image[:,:,2] *= (1/255.0)
+    return image[np.newaxis,:,:,:]
+    # return figure
 
 
 class Network:
@@ -250,7 +269,8 @@ class Network:
                                         alpha=self.config.alpha, 
                                         gamma=self.config.gamma)
 
-            self.interested_pc = self.inputs['xyz'][0]        
+            self.interested_pc = self.inputs['xyz'][0]
+            self.gt_output_interested_point_cloud = self.inputs['class_label']       
             self.pred_fgbg_label = tf.equal(tf.cast(tf.argmax(tf.nn.sigmoid(self.pred_fgbg),axis=-1)
                                     ,dtype=tf.int32), tf.cast(self.inputs['fgbg'],dtype=tf.int32))          
  
@@ -266,21 +286,23 @@ class Network:
             #     lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
 
             # compute loss for binary classification
-            # self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=[-1])
-            self.pred_cls = tf.reshape(tf.nn.sigmoid(self.cls_logits), shape=[-1])
+            self.mask = tf.reshape(tf.equal(self.inputs['fgbg'], 1), shape=[-1])
+            self.pred_cls = tf.reshape(self.cls_logits, shape=[-1])
             self.reshaped_target_cls = tf.reshape(self.inputs['class_label'], shape=[-1])
-            # self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
-            # self.masked_target_cls = tf.boolean_mask(self.reshaped_target_cls, self.mask)
+            self.masked_pred_cls = tf.boolean_mask(self.pred_cls, self.mask)
+            self.masked_target_cls = tf.cast(tf.boolean_mask(self.reshaped_target_cls, self.mask), dtype=tf.float32)
             # self.masked_one_hot_cls = tf.one_hot(self.masked_target_cls, depth=self.num_classes)
             # self.unweighted_losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.masked_pred_cls, labels=self.masked_one_hot_cls)
+            self.cross_entropy = tf.nn.sigmoid_cross_entropy_with_logits(labels=self.masked_target_cls, logits=self.masked_pred_cls)
+            self.cls_loss = tf.reduce_mean(self.cross_entropy)
             # self.cls_loss = tf.cond(self.num_fg_points > 0, lambda: tf.reduce_mean(self.unweighted_losses), 
-                # lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
-            self.cls_loss = tf.reduce_mean(self.pred_cls - tf.cast(self.reshaped_target_cls, dtype=tf.float32))
+            #     lambda: tf.convert_to_tensor(0.0)* tf.reduce_mean(self.unweighted_losses))
+            # self.cls_loss = tf.losses.mean_squared_error(tf.cast(self.reshaped_target_cls, dtype=tf.float32), self.pred_cls)
 
 
             # compute percentage of points which are not class 0
-            # self.num_non_zero_cls = tf.math.reduce_sum(tf.cast(tf.greater(self.masked_target_cls, 0), dtype=tf.float32))
-            self.num_non_zero_cls = tf.math.reduce_sum(tf.cast(tf.greater(self.reshaped_target_cls, 0), dtype=tf.float32))
+            self.num_non_zero_cls = tf.math.reduce_sum(tf.cast(tf.greater(self.masked_target_cls, 0), dtype=tf.float32))
+            # self.num_non_zero_cls = tf.math.reduce_sum(tf.cast(tf.greater(self.reshaped_target_cls, 0), dtype=tf.float32))
             self.non_zero_cls_ratio = tf.divide(self.num_non_zero_cls, 
                     tf.cast(
                         tf.shape(self.inputs['class_label'])[0]* tf.shape(self.inputs['class_label'])[1]
@@ -303,7 +325,13 @@ class Network:
 
             # self.loss = self.mask_loss # + self.bbox_loss #+ self.cls_loss
             self.loss = self.mask_loss +  self.cls_loss
+            # self.loss = self.cls_loss
 
+        def _compute_gradients(tensor, var_list, opt):
+            # gvs = opt_func.compute_gradients(self.loss, tvars)
+            grads = opt_func.compute_gradients(tensor, var_list)
+            # return [grad if grad is not None else tf.zeros_like(var) for var, grad in zip(var_list, grads)]
+            return [grad for grad in grads if grad[0] is not None]
 
         with tf.variable_scope('optimizer'):
             # self.global_step = tf.Variable(0, trainable=False)
@@ -314,9 +342,28 @@ class Network:
             opt_func = tf.train.AdamOptimizer(self.learning_rate) # .minimize(self.loss)
             tvars = tf.trainable_variables()
 
-            grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, tvars), 1)
+            accum_vars = [tf.Variable(tf.zeros_like(tv.initialized_value()), trainable=False) for tv in tvars]
+            self.zero_ops = [tv.assign(tf.zeros_like(tv)) for tv in accum_vars]
 
-            self.train_op = opt_func.apply_gradients(zip(grads, tvars))
+            # grads = tf.gradients(self.loss, tvars)
+            # self.grads = [tf.copy(grad) for grad in grads]
+            # grads, _ = tf.clip_by_global_norm(grads, 1)
+            
+            # gvs = tf.clip_by_global_norm(tf.gradients(self.loss, tvars), 1)
+            self.gvs = opt_func.compute_gradients(self.loss, tvars)
+            # self.gvs = tf.clip_by_global_norm(_compute_gradients(self.loss, tvars, opt_func),1)
+            # gvs = self.gvs
+            ## Adds to each element from the list you initialized earlier with zeros its gradient (works because accum_vars and gvs are in the same order)
+
+            self.accum_ops = [accum_vars[i].assign_add(gv[0]) for i, gv in enumerate(self.gvs) if gv[0] is not None]
+
+
+            ## Define the training step (part with variable value update)
+            self.train_op = opt_func.apply_gradients([(accum_vars[i], gv[1]) for i, gv in enumerate(self.gvs)])
+            # grads, _ = self.gvs
+
+            # grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, tvars), 1)
+            # self.train_op = opt_func.apply_gradients(zip(grads, tvars))
             self.extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
             # self.global_step += 1
 
@@ -354,8 +401,15 @@ class Network:
             # lambda:  tf.reduce_mean(tf.cast(
             #     tf.nn.in_top_k(self.masked_pred_cls, self.masked_target_cls, 1)
             #     , tf.float32)), lambda: tf.convert_to_tensor(-1.0))
-
-            self.classification_accuracy = tf.reduce_mean(tf.cast(self.pred_cls > 0.5, dtype=tf.int32) - self.reshaped_target_cls)
+# 
+            # self.classification_accuracy = tf.reduce_sum(tf.cast(tf.cast(self.pred_cls > 0.5, dtype=tf.int32) == self.masked_target_cls , dtype=tf.float32) ) \
+            #                                 / tf.cast(tf.shape(self.pred_cls)[0], dtype=tf.float32)
+            # self.classification_accuracy = tf.reduce_sum(tf.cast(tf.cast(self.masked_pred_cls > 0.5, dtype=tf.int32) == self.masked_target_cls , dtype=tf.float32) ) \
+            #                                 / tf.cast(tf.shape(self.masked_pred_cls)[0], dtype=tf.float32)
+            
+            predicted = tf.nn.sigmoid(self.masked_pred_cls)
+            correct_pred = tf.equal(tf.round(predicted), self.masked_target_cls)
+            self.classification_accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
             # self.accuracy = tf.cond(self.num_active_points > 0, 
             # lambda:  tf.reduce_mean(tf.cast(
             #     tf.nn.in_top_k(self.masked_pred_cls, self.valid_gt_label, 1)
@@ -365,12 +419,13 @@ class Network:
             self.gt_fgbg = tf.cast(self.inputs['fgbg'],dtype=tf.int32)
             self.gt_fgbg = tf.reshape(self.gt_fgbg, [-1])
             # self.gt_fgbg = tf.squeeze(self.gt_fgbg,-1)
-            self.fgbg_correct_prediction = tf.nn.in_top_k(self.pred_fgbg, self.gt_fgbg, 1)
+            self.fgbg_correct_prediction = tf.nn.in_top_k(tf.nn.sigmoid(self.pred_fgbg), self.gt_fgbg, 1)
             self.fgbg_accuracy = tf.reduce_mean(tf.cast(self.fgbg_correct_prediction, tf.float32))
             # self.prob_logits = tf.nn.softmax(self.pred_cls)
             self.prob_fgbg = tf.nn.sigmoid(self.pred_fgbg)
             # self.prob_cls = tf.nn.softmax(self.masked_pred_cls)
-            self.prob_cls = self.pred_cls
+            self.prob_cls = predicted
+            self.pred_cls_label = tf.round(predicted)
             
 
             # material_config = {
@@ -428,18 +483,108 @@ class Network:
             val_summary.append(tf.summary.scalar('val_num_non_zero_cls', self.num_non_zero_cls))
             val_summary.append(tf.summary.scalar('val_non_zero_cls_ratio', self.non_zero_cls_ratio))
             
+            # self.mean_val_loss_ph = tf.placeholder(dtype=tf.float32, shape = (),
+            #     name='mean_validation_loss')
+
+            # self.mean_val_fgbg_accuracy_ph = tf.placeholder(dtype=tf.float32, shape = (),
+            #     name='mean_validation_fgbg_accuracy')
+            # self.mean_val_classification_accuracy_ph = tf.placeholder(dtype=tf.float32, shape = (),
+            #     name='mean_val_classification_accuracy')
+            # self.mean_val_summary = tf.summary.merge([tf.summary.scalar("mean_validation_loss", self.mean_val_loss_ph),
+            #     tf.summary.scalar("mean_validation_fgbg_accuracy", self.mean_val_fgbg_accuracy_ph),
+            #     tf.summary.scalar("mean_val_classification_accuracy", self.mean_val_classification_accuracy_ph)
+            # ])
+
+            self.mean_train_fgbg_loss_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_fgbg_loss')
+
+            self.mean_train_cls_loss_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_cls_loss')
+
+            self.mean_train_loss_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_loss')
+
+            self.mean_train_fgbg_accuracy_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_fgbg_accuracy')
+            self.mean_train_cls_accuracy_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_cls_accuracy')
+            self.mean_train_fgbg_iou_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_fgbg_iou')
+            self.mean_train_cls_iou_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_cls_iou')
+            self.mean_train_fgbg_precision_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_fgbg_precision')
+            self.mean_train_cls_precision_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_cls_precision')
+            self.mean_train_fgbg_recall_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_fgbg_recall')
+            self.mean_train_cls_recall_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_train_cls_recall')
+
+            self.mean_train_summary = tf.summary.merge([tf.summary.scalar("mean_train_fgbg_loss", self.mean_train_fgbg_loss_ph),
+                tf.summary.scalar("mean_train_cls_loss", self.mean_train_cls_loss_ph),
+                tf.summary.scalar("mean_train_loss", self.mean_train_loss_ph),
+                tf.summary.scalar("mean_train_fgbg_accuracy", self.mean_train_fgbg_accuracy_ph),
+                tf.summary.scalar("mean_train_cls_accuracy", self.mean_train_cls_accuracy_ph),
+                tf.summary.scalar("mean_train_fgbg_iou", self.mean_train_fgbg_iou_ph),
+                tf.summary.scalar("mean_train_cls_iou", self.mean_train_cls_iou_ph),
+                tf.summary.scalar("mean_train_fgbg_precision", self.mean_train_fgbg_precision_ph),
+                tf.summary.scalar("mean_train_cls_precision", self.mean_train_cls_precision_ph),
+                tf.summary.scalar("mean_train_fgbg_recall", self.mean_train_fgbg_recall_ph),
+                tf.summary.scalar("mean_train_cls_recall", self.mean_train_cls_recall_ph)
+            ])
+
+            self.train_cm_image_ph = tf.placeholder(dtype=tf.uint8, shape = (1, None,None,4),
+                name='mean_val_cls_recall')
+            self.train_cm_image = tf.summary.image("Train Confusion Matrix", self.train_cm_image_ph, family="confusion_matrix_" + str(self.config.alpha))
+                                
+
+
+            self.mean_val_fgbg_loss_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_val_fgbg_loss')
+
+            self.mean_val_cls_loss_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_val_cls_loss')
+
             self.mean_val_loss_ph = tf.placeholder(dtype=tf.float32, shape = (),
-                name='mean_validation_loss')
+                name='mean_val_loss')
 
             self.mean_val_fgbg_accuracy_ph = tf.placeholder(dtype=tf.float32, shape = (),
-                name='mean_validation_fgbg_accuracy')
-            self.mean_val_classification_accuracy_ph = tf.placeholder(dtype=tf.float32, shape = (),
-                name='mean_val_classification_accuracy')
-            self.mean_val_summary = tf.summary.merge([tf.summary.scalar("mean_validation_loss", self.mean_val_loss_ph),
-                tf.summary.scalar("mean_validation_fgbg_accuracy", self.mean_val_fgbg_accuracy_ph),
-                tf.summary.scalar("mean_val_classification_accuracy", self.mean_val_classification_accuracy_ph)
+                name='mean_val_fgbg_accuracy')
+            self.mean_val_cls_accuracy_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_val_cls_accuracy')
+            self.mean_val_fgbg_iou_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_val_fgbg_iou')
+            self.mean_val_cls_iou_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_val_cls_iou')
+            self.mean_val_fgbg_precision_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_val_fgbg_precision')
+            self.mean_val_cls_precision_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_val_cls_precision')
+            self.mean_val_fgbg_recall_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_val_fgbg_recall')
+            self.mean_val_cls_recall_ph = tf.placeholder(dtype=tf.float32, shape = (),
+                name='mean_val_cls_recall')
+
+            self.mean_val_summary = tf.summary.merge([tf.summary.scalar("mean_val_fgbg_loss", self.mean_val_fgbg_loss_ph),
+                tf.summary.scalar("mean_val_cls_loss", self.mean_val_cls_loss_ph),
+                tf.summary.scalar("mean_val_loss", self.mean_val_loss_ph),
+                tf.summary.scalar("mean_val_fgbg_accuracy", self.mean_val_fgbg_accuracy_ph),
+                tf.summary.scalar("mean_val_cls_accuracy", self.mean_val_cls_accuracy_ph),
+                tf.summary.scalar("mean_val_fgbg_iou", self.mean_val_fgbg_iou_ph),
+                tf.summary.scalar("mean_val_cls_iou", self.mean_val_cls_iou_ph),
+                tf.summary.scalar("mean_val_fgbg_precision", self.mean_val_fgbg_precision_ph),
+                tf.summary.scalar("mean_val_cls_precision", self.mean_val_cls_precision_ph),
+                tf.summary.scalar("mean_val_fgbg_recall", self.mean_val_fgbg_recall_ph),
+                tf.summary.scalar("mean_val_cls_recall", self.mean_val_cls_recall_ph)
             ])
-            
+
+            self.val_cm_image_ph = tf.placeholder(dtype=tf.uint8, shape = (1, None,None,4),
+                name='mean_val_cls_recall')
+            self.val_cm_image = tf.summary.image("Val Confusion Matrix", self.val_cm_image_ph, family="confusion_matrix_" + str(self.config.alpha))
+                    
+
+
 
         my_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
         self.saver = tf.train.Saver(my_vars, max_to_keep=100)
@@ -490,24 +635,19 @@ class Network:
                 f_encoder_list.append(f_encoder_i)
             f_encoder_list.append(f_sampled_i)
         # ###########################Encoder############################
-
+        self.feature = f_encoder_list[-1]
+        # feature = f_encoder_list[-1]
         feature = helper_tf_util.conv2d(f_encoder_list[-1], f_encoder_list[-1].get_shape()[3].value, [1, 1],
                                         'decoder_0',
                                         [1, 1], 'VALID', True, is_training)
-
-
-        # # bboxes head
-        # bboxes_layer_fc1 = helper_tf_util.conv2d(f_encoder_list[-1], 64, [1, 1], 'bboxes_fc1', [1, 1], 'VALID', True, is_training)
-        # bboxes_layer_fc2 = helper_tf_util.conv2d(bboxes_layer_fc1, 32, [1, 1], 'bboxes_fc2', [1, 1], 'VALID', True, is_training)
-        # bboxes_layer_drop = helper_tf_util.dropout(bboxes_layer_fc2, keep_prob=0.5, is_training=is_training, scope='bboxes_dp1')
-        # bboxes_layer_fc3 = helper_tf_util.conv2d(bboxes_layer_drop, self.num_target_attributes-1, [1, 1], 'bboxes_fc', [1, 1], 'VALID', False,
+                # print("cls_cm_cumulative: ", cls_cm_cboxes_layer_drop, self.num_target_attributes-1, [1, 1], 'bboxes_fc', [1, 1], 'VALID', False,
         #                                     is_training, activation_fn=None)
         # bboxes_out = tf.squeeze(bboxes_layer_fc3, [2])
 
 
         # fgbg head
-        fgbg_layer_fc1 = helper_tf_util.conv2d(feature, 256, [1, 1], 'fgbg_fc1', [1, 1], 'VALID', True, is_training)
-        fgbg_layer_fc2 = helper_tf_util.conv2d(fgbg_layer_fc1, 256, [1, 1], 'fgbg_fc2', [1, 1], 'VALID', True, is_training)
+        fgbg_layer_fc1 = helper_tf_util.conv2d(feature, 64, [1, 1], 'fgbg_fc1', [1, 1], 'VALID', True, is_training)
+        fgbg_layer_fc2 = helper_tf_util.conv2d(fgbg_layer_fc1, 32, [1, 1], 'fgbg_fc2', [1, 1], 'VALID', True, is_training)
         fgbg_layer_drop = helper_tf_util.dropout(fgbg_layer_fc2, keep_prob=0.5, is_training=is_training, scope='fgbg_dp1')
         fgbg_layer_fc3 = helper_tf_util.conv2d(fgbg_layer_drop, self.num_fgbg_attributes, [1, 1], 'fgbg_fc', [1, 1], 'VALID', False,
                                             is_training, activation_fn=None)
@@ -516,13 +656,25 @@ class Network:
 
         # classification head
 
-        cls_layer_fc1 = helper_tf_util.conv2d(feature, 256, [1, 1], 'cls_fc1', [1, 1], 'VALID', True, is_training)
-        cls_layer_fc2 = helper_tf_util.conv2d(cls_layer_fc1, 256, [1, 1], 'cls_fc2', [1, 1], 'VALID', True, is_training)
+        cls_layer_fc1 = helper_tf_util.conv2d(feature, 64, [1, 1], 'cls_fc1', [1, 1], 'VALID', True, is_training)
+        cls_layer_fc2 = helper_tf_util.conv2d(cls_layer_fc1, 32, [1, 1], 'cls_fc2', [1, 1], 'VALID', True, is_training)
         cls_layer_drop = helper_tf_util.dropout(cls_layer_fc2, keep_prob=0.5, is_training=is_training, scope='cls_dp1')
         cls_layer_fc3 = helper_tf_util.conv2d(cls_layer_drop, self.num_classes, [1, 1], 'cls_fc', [1, 1], 'VALID', False,
                                             is_training, activation_fn=None)
         cls_out = tf.squeeze(cls_layer_fc3, [2])
-        return fgbg_out, cls_out
+
+
+        # num_bboxes_attributes head
+        # centers and dimensions
+
+        # bbox_layer_fc1 = helper_tf_util.conv2d(feature, 64, [1, 1], 'bbox_fc1', [1, 1], 'VALID', True, is_training)
+        # bbox_layer_fc2 = helper_tf_util.conv2d(bbox_layer_fc1, 32, [1, 1], 'bbox_fc2', [1, 1], 'VALID', True, is_training)
+        # # cls_layer_drop = helper_tf_util.dropout(bbox_layer_fc2, keep_prob=0.5, is_training=is_training, scope='cls_dp1')
+        # bbox_layer_fc3 = helper_tf_util.conv2d(bbox_layer_fc2, self.num_bboxes_attributes-1, [1, 1], 'bbox_fc', [1, 1], 'VALID', False,
+        #                                     is_training, activation_fn=None)
+        # bbox_out = tf.squeeze(bbox_layer_fc3, [2])
+
+        return fgbg_out, cls_out #, bbox_out
 
         # f_layer_fc1 = helper_tf_util.conv2d(f_encoder_list[-1], 64, [1, 1], 'fc1', [1, 1], 'VALID', True, is_training)
         # f_layer_fc2 = helper_tf_util.conv2d(f_layer_fc1, 32, [1, 1], 'fc2', [1, 1], 'VALID', True, is_training)
@@ -558,18 +710,44 @@ class Network:
         
 
         self.sess.run(dataset.train_init_op)
+        previous_epoch = self.training_epoch
+        fgbg_loss_array = []
+        cls_loss_array = []
+        overall_loss_array = []
+        fgbg_acc_array = []
+        cls_acc_array = []
+        fgbg_iou_array = []
+        cls_iou_array = []
+        fgbg_cm_cumulative = np.array([[0,0],[0,0]])
+        cls_cm_cumulative = np.array([[0,0],[0,0]])
+        self.sess.run(self.zero_ops)
         while self.training_epoch < self.config.max_epoch:
+            if self.training_epoch > previous_epoch:
+                previous_epoch = self.training_epoch
+                fgbg_loss_array = []
+                cls_loss_array = []
+                overall_loss_array = []
+                fgbg_acc_array = []
+                cls_acc_array = []
+                fgbg_iou_array = []
+                cls_iou_array = []
+                fgbg_cm_cumulative = np.array([[0,0],[0,0]])
+                cls_cm_cumulative = np.array([[0,0],[0,0]])
+
             t_start = time.time()
             try:
-                ops = [self.train_op,
+                ops = [self.accum_ops,
                         self.extra_update_ops,
                         self.train_summary,
+                        self.mask_loss,
+                        self.cls_loss,
                         self.loss,
                         # self.logits,
                         # self.pred_fgbg,
                         self.prob_fgbg,
                         self.prob_cls,
                         self.interested_pc,
+                        self.gt_output_interested_point_cloud,
                         self.fgbg_ratio,
                         self.non_zero_cls_ratio,
                         # self.gt_fgbg,
@@ -579,12 +757,20 @@ class Network:
                         # self.masked_pred_cls,
                         # self.masked_target_cls,
                         self.pred_cls,
-                        self.reshaped_target_cls
+                        self.reshaped_target_cls,
+                        self.pred_cls_label,
+                        self.masked_target_cls,
+                        self.gt_fgbg,
+                        self.feature,
+                        # self.grads
+                        # self.gvs
                         ]
-                _, _, train_summary, l_out, prob_fgbg, prob_cls  ,interested_pc, fgbg_ratio, non_zero_cls_ratio,\
-                        fgbg_accuracy, cls_acc, pred_cls, target_cls = self.sess.run(ops, {self.is_training: True})
+                _, _, train_summary, fgbg_loss, cls_loss, l_out, prob_fgbg, prob_cls  ,interested_pc, \
+                    gt_output_interested_point_cloud, fgbg_ratio, non_zero_cls_ratio,\
+                        fgbg_accuracy, cls_acc, pred_cls, target_cls , pred_cls_label, masked_target_cls, gt_fgbg, \
+                        feature = self.sess.run(ops, {self.is_training: True})
                 self.train_writer.add_summary(train_summary, self.training_step)
-                
+                # print("Mask.sum: ", np.sum(mask))
                 # # Calculate the confusion matrix.
                 # cm = sklearn.metrics.confusion_matrix(target_cls, np.argmax(pred_cls,axis=-1))
                 # # Log the confusion matrix as an image summary.
@@ -593,45 +779,167 @@ class Network:
                 # tf_cm_summary = tf.summary.image("Confusion Matrix", cm_image, family="confusion_matrix")
                 # tf_cm_image = self.sess.run(tf_cm_summary)
                 # self.train_writer.add_summary(tf_cm_image, self.training_step)
-
+                
                 t_end = time.time()
+
+                # for grad in grads:
+                #     print("grad[0].shape: ", grad[0].shape, "\t grad[1].shape: ", grad[1].shape)                    
+
+                # for i, gv in enumerate(gvs):
+                #     print("\t grad[0].shape: ", grads[i][0].shape, "\t grad[1].shape: ", grads[i][1].shape, "\t gv[0].shape: ", gv[0].shape, "\t gv[1].shape: ", gv[1].shape)
+                    
+
+                # print("feature.shape: ", feature.shape)
+
+                pred_fgbg_label = np.argmax(prob_fgbg, 1)
+                # print("pred_fgbg_label: ", set(pred_fgbg_label))
+                # print("pred_fgbg_label.shape: ", pred_fgbg_label.shape)
+                fgbg_cm = [] # [[TN, FP], [FN, TP]]
+                for label_idx in range(2):
+                    row = []
+                    for pred_idx in range(2):
+                        mask1 = (gt_fgbg == label_idx)
+                        mask2 = (pred_fgbg_label == pred_idx)
+                        # print(mask1)
+                        # print(mask2)
+                        correct = mask1 & mask2
+                        row.append(np.sum(correct))
+                    fgbg_cm.append(row)
+                # print(fgbg_cm)
+                fgbg_cm_cumulative =  fgbg_cm_cumulative + np.array(fgbg_cm)
+                # print(fgbg_cm_cumulative)
+                # fgbg_iou = fgbg_cm[1][1]/ (np.sum(fgbg_cm) - fgbg_cm[0][0])
+                # fgbg_precision = fgbg_cm[1][1] / (fgbg_cm[0][1] + fgbg_cm[1][1])
+                # fgbg_recall = fgbg_cm[1][1] / (fgbg_cm[1][0] + fgbg_cm[1][1])
+                # print("fgbg iou: ", fgbg_iou, "\t fgbg precision: ", fgbg_precision, "\t fgbg recall: ", fgbg_recall)
+                cls_cm = [] # [[TN, FP], [FN, TP]]
+                for label_idx in range(2):
+                    row = []
+                    for pred_idx in range(2):
+                        mask1 = (masked_target_cls == label_idx)
+                        mask2 = (pred_cls_label == pred_idx)
+                        # print(mask1)
+                        # print(mask2)
+                        correct = mask1 & mask2
+                        row.append(np.sum(correct))
+                    cls_cm.append(row)
+                cls_cm_cumulative = cls_cm_cumulative + np.array(cls_cm)
+                # cls_iou = cls_cm[1][1]/ (np.sum(cls_cm) - cls_cm[0][0])
+                # cls_precision = cls_cm[1][1] / (cls_cm[0][1] + cls_cm[1][1])
+                # cls_recall = cls_cm[1][1] / (cls_cm[1][0] + cls_cm[1][1])
+                # print("cls iou: ", cls_iou, "\t cls precision: ", cls_precision, "\t cls recall: ", cls_recall)
+                
                 if self.training_step % 50 == 0:
+                    self.sess.run(self.train_op)
+                    self.sess.run(self.zero_ops)
                     # for i in range(10):
                     #     print(prob_logits[i])
                     #     print(gt_fgbg[i])
-                    message = 'Step {:08d} L_out={:5.3f} Acc={:4.5f} FgbgAcc={:4.5f} FgbgPer={:4.5f} NonZeroClsPer={:4.5f} ''---{:8.2f} ms/batch {}' 
-                    log_out(message.format(self.training_step, l_out, cls_acc, fgbg_accuracy, fgbg_ratio, non_zero_cls_ratio, 1000 * (t_end - t_start), str(set(target_cls))), self.Log_file)
+                    message = 'Step {:08d} Pred_fgbg_sum {:08d} L_out={:5.9f} Acc={:4.5f} FgbgAcc={:4.5f} FgbgPer={:4.5f} NonZeroClsPer={:4.5f} ''---{:8.2f} ms/batch {}' 
+                    log_out(message.format(self.training_step, np.sum(np.argmax(prob_fgbg, axis=1)), l_out, cls_acc, fgbg_accuracy, fgbg_ratio, non_zero_cls_ratio, 1000 * (t_end - t_start), str(set(target_cls))), self.Log_file)
+                    # print(prob_fgbg.shape)
+                    # if (self.training_step % 200 == 0) and (self.training_epoch % 5 == 0):
+                    interested_pc_output_path = os.path.join(self.config.visual_log_path, 'interested_pc_' + str(self.training_step) + '.bin')
+                    gt_output_interested_pc_output_path = os.path.join(self.config.visual_log_path, 'gt_output_interested_pc_' + str(self.training_step) + '.bin')
+                    pred_fgbg_label_output_path = os.path.join(self.config.visual_log_path, 'pred_fgbg_label_' + str(self.training_step) + '.bin')
+                    pred_class_label_output_path = os.path.join(self.config.visual_log_path, 'pred_class_label_' + str(self.training_step) + '.bin')
+                    interested_pc.astype('float32').tofile(interested_pc_output_path)
+                    gt_output_interested_point_cloud.astype('float32').tofile(gt_output_interested_pc_output_path)
+                    prob_fgbg.astype('float32').tofile(pred_fgbg_label_output_path)
+                    prob_cls.astype('float32').tofile(pred_class_label_output_path)
                     
-                    if (self.training_step % 200 == 0) and (self.training_epoch % 5 == 0):
-                        interested_pc_output_path = os.path.join(self.config.visual_log_path, 'interested_pc_' + str(self.training_step) + '.bin')
-                        pred_fgbg_label_output_path = os.path.join(self.config.visual_log_path, 'pred_fgbg_label_' + str(self.training_step) + '.bin')
-                        pred_class_label_output_path = os.path.join(self.config.visual_log_path, 'pred_class_label_' + str(self.training_step) + '.bin')
-                        interested_pc.astype('float32').tofile(interested_pc_output_path)
-                        prob_fgbg.astype('float32').tofile(pred_fgbg_label_output_path)
-                        prob_cls.astype('float32').tofile(pred_class_label_output_path)
-                        
-                        # Calculate the confusion matrix.
-                        # cm = sklearn.metrics.confusion_matrix(target_cls, np.argmax(pred_cls,axis=-1))
-                        cm = sklearn.metrics.confusion_matrix(target_cls, (pred_cls > 0.5),labels=["not car", "car"])
-                        # Log the confusion matrix as an image summary.
-                        # figure = plot_confusion_matrix(cm, class_names=['Car', 'Pedestrian', 'Cyclist', 'Van'])
-                        figure = plot_confusion_matrix(cm, class_names=["not car", "car"])
-                        cm_image = plot_to_image(figure)
-                        tf_cm_summary = tf.summary.image("Confusion Matrix", cm_image, family="confusion_matrix_" + str(self.config.alpha))
-                        tf_cm_image = self.sess.run(tf_cm_summary)
-                        self.train_writer.add_summary(tf_cm_image, self.training_step)
+                    # Calculate the confusion matrix.
+                    # fgbg_cm = sklearn.metrics.confusion_matrix(gt_fgbg, pred_fgbg_label, np.arange(0,self.num_fgbg_attributes))
+                    # cls_cm = sklearn.metrics.confusion_matrix(masked_target_cls, pred_cls_label, np.arange(0,self.num_fgbg_attributes))
+                    # print("train_confusion_matrix")
+                    # print("fgbg_cm: \n", fgbg_cm)
+                    # print("cls_cm: \n", cls_cm)
+                    # print("fgbg iou: ", fgbg_iou, "\t fgbg precision: ", fgbg_precision, "\t fgbg recall: ", fgbg_recall)
+                    # print("cls iou: ", cls_iou, "\t cls precision: ", cls_precision, "\t cls recall: ", cls_recall)
+                    # cm = sklearn.metrics.confusion_matrix(masked_target_cls, pred_cls_label)
+                    # print("cm: ", cm)
+                    # print("cls iou: ", cls_iou)
+                    # tn, fp, fn, tp = sklearn.metrics.confusion_matrix(masked_target_cls, pred_cls_label).ravel()
+                    # print(tn, fp, fn, tp)
+                    # Log the confusion matrix as an image summary.
+                    # figure = plot_confusion_matrix(cm, class_names=['Car', 'Pedestrian', 'Cyclist', 'Van'])
+                    # figure = plot_confusion_matrix(np.array(cls_cm), class_names=["not car", "car"])
+                    # image_cm = plot_to_image(figure)
+
+                    # figure = plot_confusion_matrix(np.array(fgbg_cm), class_names=["bg", "fg"])
+                    # print("figure.shape: ", figure.shape)
+                    # # image_cm = plot_to_image(figure)
+                    # tf_cm_image = self.sess.run(self.train_cm_image, {self.train_cm_image_ph: figure})
+                    # self.train_writer.add_summary(tf_cm_image, self.training_step)
+
+
+                fgbg_loss_array.append(fgbg_loss)
+                cls_loss_array.append(cls_loss)
+                overall_loss_array.append(l_out)
+                fgbg_acc_array.append(fgbg_accuracy)
+                cls_acc_array.append(cls_acc)
+                # fgbg_iou_array.append(fgbg_iou)
+                # cls_iou_array.append(cls_iou)
 
                 self.training_step += 1
-            # except tf.errors.OutOfRangeError:
-            #     self.training_epoch += 1
-            #     self.sess.run(dataset.train_init_op)
-            #     print("Epoch ", self.training_epoch)
-            #     op = self.learning_rate.assign(tf.multiply(self.learning_rate,
-            #                                                self.config.lr_decays[self.training_epoch]))
-            #     self.sess.run(op)
 
             except tf.errors.OutOfRangeError:
+                # print("fgbg_cm_cumulative: ", fgbg_cm_cumulative)
+                # print("cls_cm_cumulative: ", cls_cm_cumulative)
+                self.sess.run(self.train_op)
+                self.sess.run(self.zero_ops)
 
+                fgbg_iou = fgbg_cm_cumulative[1][1]/ (np.sum(fgbg_cm_cumulative) - fgbg_cm_cumulative[0][0])
+                fgbg_precision = fgbg_cm_cumulative[1][1] / (fgbg_cm_cumulative[0][1] + fgbg_cm_cumulative[1][1])
+                fgbg_recall = fgbg_cm_cumulative[1][1] / (fgbg_cm_cumulative[1][0] + fgbg_cm_cumulative[1][1])
+                cls_iou = cls_cm_cumulative[1][1]/ (np.sum(cls_cm_cumulative) - cls_cm_cumulative[0][0])
+                cls_precision = cls_cm_cumulative[1][1] / (cls_cm_cumulative[0][1] + cls_cm_cumulative[1][1])
+                cls_recall = cls_cm_cumulative[1][1] / (cls_cm_cumulative[1][0] + cls_cm_cumulative[1][1])
+
+                figure = plot_confusion_matrix(fgbg_cm_cumulative, class_names=["bg", "fg"])
+                # print("figure.shape: ", figure.shape)
+                # image_cm = plot_to_image(figure)
+                tf_cm_image = self.sess.run(self.train_cm_image, {self.train_cm_image_ph: figure})
+                self.train_writer.add_summary(tf_cm_image, self.training_epoch)
+
+
+                ops = self.mean_train_summary
+                print("Epoch: ", self.training_epoch,
+                    "\n mean_overall_loss: ", np.mean(overall_loss_array),
+                    "\n mean_fgbg_loss: ", np.mean(fgbg_loss_array),
+                    "\n mean_cls_loss_array: ", np.mean(cls_loss_array),
+                    "\n fgbg_cm_cumulative: ", fgbg_cm_cumulative,
+                    "\n cls_cm_cumulative: ", cls_cm_cumulative,
+                    "\n fgbg iou: ", fgbg_iou, "\n fgbg precision: ", fgbg_precision, "\n fgbg recall: ", fgbg_recall,
+                    "\n cls iou: ", cls_iou, "\n cls precision: ", cls_precision, "\n cls recall: ", cls_recall)
+
+                mean_train_summary = self.sess.run(ops, {self.mean_train_fgbg_loss_ph: np.mean(fgbg_loss_array),
+                                    self.mean_train_cls_loss_ph: np.mean(cls_loss_array),
+                                    self.mean_train_loss_ph: np.mean(overall_loss_array),
+                                    self.mean_train_fgbg_accuracy_ph: np.mean(fgbg_acc_array),
+                                    self.mean_train_cls_accuracy_ph: np.mean(cls_acc_array),
+                                    self.mean_train_fgbg_iou_ph: np.mean(fgbg_iou),
+                                    self.mean_train_cls_iou_ph: np.mean(cls_iou),
+                                    self.mean_train_fgbg_precision_ph: np.mean(fgbg_precision),
+                                    self.mean_train_cls_precision_ph: np.mean(cls_precision),
+                                    self.mean_train_fgbg_recall_ph: np.mean(fgbg_recall),
+                                    self.mean_train_cls_recall_ph: np.mean(cls_recall)})
+                self.train_writer.add_summary(mean_train_summary, self.training_epoch)
+
+                # summary_list = tf.summary.merge([tf.summary.scalar('mean_fgbg_loss_per_epoch', np.mean(fgbg_loss_array)),
+                # tf.summary.scalar('mean_cls_loss_per_epoch',  np.mean(cls_loss_array)),
+                # tf.summary.scalar('mean_overall_loss_per_epoch',  np.mean(overall_loss_array)),
+                # tf.summary.scalar('mean_fgbg_acc_per_epoch',  np.mean(fgbg_acc_array)),
+                # tf.summary.scalar('mean_cls_acc_per_epoch',  np.mean(cls_acc_array)),
+                # tf.summary.scalar('mean_fgbg_iou_per_epoch',  np.mean(fgbg_iou_array)),
+                # tf.summary.scalar('mean_cls_iou_per_epoch',  np.mean(cls_iou_array))])
+                # tf.summary.scalar("mean_train_fgbg_precision", self.mean_train_fgbg_precision_ph),
+                # tf.summary.scalar("mean_train_cls_precision", self.mean_train_cls_precision_ph),
+                # tf.summary.scalar("mean_train_fgbg_recall", self.mean_train_fgbg_recall_ph),
+                # tf.summary.scalar("mean_train_cls_recall", self.mean_train_cls_recall_ph)
+                # tf_summary_list = self.sess.run(summary_list)
+                # self.train_writer.add_summary(tf_summary_list, self.training_epoch)
+                
                 m_iou, _ = self.evaluate(dataset)
                 if m_iou > np.max(self.mIou_list):
                     # Save the best model
@@ -742,38 +1050,71 @@ class Network:
         val_fgbg_accuracy = []
         val_classification_accuracy = []
 
+        fgbg_loss_array = []
+        cls_loss_array = []
+        overall_loss_array = []
+        fgbg_acc_array = []
+        cls_acc_array = []
+        fgbg_iou_array = []
+        cls_iou_array = []
+        fgbg_cm_cumulative = np.zeros((2,2))
+        cls_cm_cumulative = np.zeros((2,2))
+
         for step_id in range(self.config.val_steps):
             if step_id % 50 == 0:
                 print(str(step_id) + ' / ' + str(self.config.val_steps))
             try:
                 ops = [self.val_summary,
+                        self.mask_loss,
+                        self.cls_loss,
                         self.loss,
                         self.prob_fgbg,
                         self.gt_fgbg,
                         self.prob_cls,
                         self.interested_pc,
+                        self.gt_output_interested_point_cloud,
                         self.fgbg_ratio,
                         self.non_zero_cls_ratio,
                         self.fgbg_accuracy,
                         self.classification_accuracy,
                         self.masked_pred_cls,
-                        self.masked_target_cls
+                        self.reshaped_target_cls,
+                        self.pred_cls_label,
+                        self.masked_target_cls,
+                        self.gt_fgbg
                         ]
-                val_summary, loss, prob_fgbg, gt_fgbg, prob_cls, \
-                interested_pc, fgbg_ratio, non_zero_cls_ratio,\
-                    fgbg_accuracy, classification_accuracy,\
-                        pred_cls, target_cls = self.sess.run(ops, {self.is_training: False})
+                val_summary, fgbg_loss, cls_loss, l_out, prob_fgbg, gt_fgbg, prob_cls, \
+                interested_pc, gt_output_interested_point_cloud, fgbg_ratio, non_zero_cls_ratio,\
+                    fgbg_accuracy, cls_acc,\
+                        pred_cls, reshaped_target_cls, pred_cls_label, masked_target_cls, gt_fgbg = self.sess.run(ops, {self.is_training: False})
                 self.train_writer.add_summary(val_summary, self.validation_step)
                 self.validation_step += 1
-                val_loss.append(loss)
-                val_fgbg_accuracy.append(fgbg_accuracy)
-                val_classification_accuracy.append(classification_accuracy)
+                # val_loss.append(loss)
+                # val_fgbg_accuracy.append(fgbg_accuracy)
+                # val_classification_accuracy.append(classification_accuracy)
 
-                fgbg_correct = np.sum(np.argmax(prob_fgbg, axis=-1) == gt_fgbg)
+
+                pred_fgbg_label = np.argmax(prob_fgbg, 1)
+                fgbg_correct = np.sum(pred_fgbg_label == gt_fgbg)
                 fgbg_val_total_correct += fgbg_correct
                 fgbg_val_total_seen += len(prob_fgbg)
 
-                fgbg_conf_matrix = sklearn.metrics.confusion_matrix(gt_fgbg, np.argmax(prob_fgbg, axis=-1), np.arange(0, self.num_fgbg_attributes, 1))
+                fgbg_cm = [] # [[TN, FP], [FN, TP]]
+                for label_idx in range(2):
+                    row = []
+                    for pred_idx in range(2):
+                        mask1 = (gt_fgbg == label_idx)
+                        mask2 = (pred_fgbg_label == pred_idx)
+                        # print(mask1)
+                        # print(mask2)
+                        correct = mask1 & mask2
+                        row.append(np.sum(correct))
+                    fgbg_cm.append(row)
+                # print(fgbg_cm)
+                fgbg_cm_cumulative =  fgbg_cm_cumulative + np.array(fgbg_cm)
+                fgbg_conf_matrix = np.array(fgbg_cm)
+                # fgbg_conf_matrix = sklearn.metrics.confusion_matrix(gt_fgbg, pred_fgbg_label, np.arange(0, self.num_fgbg_attributes, 1))
+                
                 # conf_matrix = confusion_matrix(labels_valid, pred_valid, np.arange(0, self.config.num_classes, 1))
                 fgbg_gt_classes += np.sum(fgbg_conf_matrix, axis=1)
                 fgbg_positive_classes += np.sum(fgbg_conf_matrix, axis=0)
@@ -783,37 +1124,100 @@ class Network:
                 # print("np.sum(fgbg_conf_matrix, axis=0): ", np.sum(fgbg_conf_matrix, axis=0))
                 # print("np.diagonal(fgbg_conf_matrix): ", np.diagonal(fgbg_conf_matrix))
                 
-                cls_correct = np.sum(np.argmax(prob_cls, axis=-1) == target_cls)
+                cls_correct = np.sum(pred_cls_label == masked_target_cls)
                 cls_val_total_correct += cls_correct
-                cls_val_total_seen += len(prob_cls)
-
-                cls_conf_matrix = sklearn.metrics.confusion_matrix(target_cls, np.argmax(prob_cls, axis=-1), np.arange(0, self.num_classes, 1))
+                cls_val_total_seen += len(masked_target_cls)
+                
+                cls_cm = [] # [[TN, FP], [FN, TP]]
+                for label_idx in range(2):
+                    row = []
+                    for pred_idx in range(2):
+                        mask1 = (masked_target_cls == label_idx)
+                        mask2 = (pred_cls_label == pred_idx)
+                        # print(mask1)
+                        # print(mask2)
+                        correct = mask1 & mask2
+                        row.append(np.sum(correct))
+                    cls_cm.append(row)
+                cls_cm_cumulative = cls_cm_cumulative + np.array(cls_cm)
+                cls_conf_matrix = np.array(cls_cm)
+                # cls_conf_matrix = sklearn.metrics.confusion_matrix(masked_target_cls, pred_cls_label, np.arange(0, self.num_fgbg_attributes, 1))
                 # conf_matrix = confusion_matrix(labels_valid, pred_valid, np.arange(0, self.config.num_classes, 1))
                 cls_gt_classes += np.sum(cls_conf_matrix, axis=1)
                 cls_positive_classes += np.sum(cls_conf_matrix, axis=0)
                 cls_true_positive_classes += np.diagonal(cls_conf_matrix)
 
-
+                # print("val confusion matrix")
+                # print("fgbg: ")
+                # print(fgbg_conf_matrix)
+                # print("cls: ")
+                # print(cls_conf_matrix)
                 # print("np.sum(cls_conf_matrix, axis=1): ", np.sum(cls_conf_matrix, axis=1))
                 # print("np.sum(cls_conf_matrix, axis=0): ", np.sum(cls_conf_matrix, axis=0))
                 # print("np.diagonal(cls_conf_matrix): ", np.diagonal(cls_conf_matrix))
+                # fgbg_conf_matrix_sum += fgbg_conf_matrix
+                # cls_conf_matrix_sum += cls_conf_matrix
 
                 interested_pc_output_path = os.path.join(self.config.visual_log_path, 'val_interested_pc_' + str(self.training_step) + '.bin')
+                gt_output_interested_point_cloud_output_path = os.path.join(self.config.visual_log_path, 'val_gt_output_interested_pc_' + str(self.training_step) + '.bin')
                 pred_fgbg_label_output_path = os.path.join(self.config.visual_log_path, 'val_pred_fgbg_label_' + str(self.training_step) + '.bin')
                 pred_class_label_output_path = os.path.join(self.config.visual_log_path, 'val_pred_class_label_' + str(self.training_step) + '.bin')
                 interested_pc.astype('float32').tofile(interested_pc_output_path)
+                gt_output_interested_point_cloud.astype('float32').tofile(gt_output_interested_point_cloud_output_path)
                 prob_fgbg.astype('float32').tofile(pred_fgbg_label_output_path)
                 prob_cls.astype('float32').tofile(pred_class_label_output_path)
+
+
+                fgbg_loss_array.append(fgbg_loss)
+                cls_loss_array.append(cls_loss)
+                overall_loss_array.append(l_out)
+                fgbg_acc_array.append(fgbg_accuracy)
+                cls_acc_array.append(cls_acc)
+            
 
             except tf.errors.OutOfRangeError:
                 break
         
-        ops = self.mean_val_summary
+        # print("fgbg_cm_cumulative: ", fgbg_cm_cumulative)
+        # print("cls_cm_cumulative: ", cls_cm_cumulative)
 
-        mean_val_summary = self.sess.run(ops, {self.mean_val_loss_ph: np.mean(val_loss),
-                            self.mean_val_fgbg_accuracy_ph: np.mean(val_fgbg_accuracy),
-                            self.mean_val_classification_accuracy_ph: np.mean(val_classification_accuracy)})
+        figure = plot_confusion_matrix(np.array(fgbg_cm_cumulative), class_names=["bg", "fg"])
+        # image_cm = plot_to_image(figure)
+        tf_cm_image = self.sess.run(self.val_cm_image, {self.val_cm_image_ph: figure})
+        self.train_writer.add_summary(tf_cm_image, self.training_epoch)
+
+        fgbg_iou = fgbg_cm_cumulative[1][1]/ (np.sum(fgbg_cm_cumulative) - fgbg_cm_cumulative[0][0])
+        fgbg_precision = fgbg_cm_cumulative[1][1] / (fgbg_cm_cumulative[0][1] + fgbg_cm_cumulative[1][1])
+        fgbg_recall = fgbg_cm_cumulative[1][1] / (fgbg_cm_cumulative[1][0] + fgbg_cm_cumulative[1][1])
+        cls_iou = cls_cm_cumulative[1][1]/ (np.sum(cls_cm_cumulative) - cls_cm_cumulative[0][0])
+        cls_precision = cls_cm_cumulative[1][1] / (cls_cm_cumulative[0][1] + cls_cm_cumulative[1][1])
+        cls_recall = cls_cm_cumulative[1][1] / (cls_cm_cumulative[1][0] + cls_cm_cumulative[1][1])
+        ops = self.mean_train_summary
+        print("Validation Epoch: ", self.training_epoch,
+            "\n mean_overall_loss: ", np.mean(overall_loss_array),
+            "\n mean_fgbg_loss: ", np.mean(fgbg_loss_array),
+            "\n mean_cls_loss_array: ", np.mean(cls_loss_array),
+            "\n fgbg_cm_cumulative: ", fgbg_cm_cumulative,
+            "\n cls_cm_cumulative: ", cls_cm_cumulative,
+            "\n fgbg iou: ", fgbg_iou, "\n fgbg precision: ", fgbg_precision, "\n fgbg recall: ", fgbg_recall,
+            "\n cls iou: ", cls_iou, "\n cls precision: ", cls_precision, "\n cls recall: ", cls_recall)
+            
+        ops = self.mean_val_summary
+        
+
+        mean_val_summary = self.sess.run(ops, {self.mean_val_fgbg_loss_ph: np.mean(fgbg_loss_array),
+                            self.mean_val_cls_loss_ph: np.mean(cls_loss_array),
+                            self.mean_val_loss_ph: np.mean(overall_loss_array),
+                            self.mean_val_fgbg_accuracy_ph: np.mean(fgbg_acc_array),
+                            self.mean_val_cls_accuracy_ph: np.mean(cls_acc_array),
+                            self.mean_val_fgbg_iou_ph: np.mean(fgbg_iou),
+                            self.mean_val_cls_iou_ph: np.mean(cls_iou),
+                            self.mean_val_fgbg_precision_ph: np.mean(fgbg_precision),
+                            self.mean_val_cls_precision_ph: np.mean(cls_precision),
+                            self.mean_val_fgbg_recall_ph: np.mean(fgbg_recall),
+                            self.mean_val_cls_recall_ph: np.mean(cls_recall)})
         self.train_writer.add_summary(mean_val_summary, self.training_epoch)
+        # self.train_writer.add_summary(mean_val_summary, self.training_epoch)
 
         fgbg_iou_list = []
         for n in range(0, self.num_fgbg_attributes, 1):
